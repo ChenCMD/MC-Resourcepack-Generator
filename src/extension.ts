@@ -5,7 +5,7 @@ import { getGenTypeMap } from './types/GenerateType';
 import { createQuickPickItemHasIds } from './types/QuickPickItemHasId';
 import { intValidater, itemValidater, pathValidater } from './types/Validater';
 import { applyTexture, createModel, fixPath, isResourcepackRoot, writeBaseModel } from './util/common';
-import { listenInput, listenDir, listenPickItem, ListenDirOption, showError } from './util/vscodeWrapper';
+import { listenInput, listenDir, listenPickItem, ListenDirOption, showError, showInfo } from './util/vscodeWrapper';
 
 export const codeConsole = window.createOutputChannel('TSB Resourcepack Generator');
 
@@ -24,13 +24,13 @@ async function run() {
     try {
         // ディレクトリ
         const dir = await listenDir('リソースパックフォルダを選択', '選択');
-        if (!await isResourcepackRoot(dir.fsPath)) throw new GenerateError('選択したディレクトリはリソースパックフォルダではありません。');
+        if (!await isResourcepackRoot(dir.fsPath)) throw new GenerateError('選択したディレクトリはリソースパックフォルダじゃないよ。');
         // 生成タイプ
         const genType = await listenPickItem('生成タイプを選択してください', createQuickPickItemHasIds(getGenTypeMap()), false);
         // MCDのID
-        const id = Number.parseInt(await listenInput('CustomModelDataのID', v => intValidater(v, '有効な数値を入力してください')));
+        const id = Number.parseInt(await listenInput('神器ID', v => intValidater(v, '有効な数値を入力してください')));
         // 元となるアイテム
-        const baseItem = await listenInput('元となるアイテム', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`));
+        const baseItem = await listenInput('元となるアイテムのitemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`));
         // それぞれの処理
         let texPath = `item/sacred_treasure/${id}`, texture: Uri | undefined, animCfg: AnimationMcmeta | undefined;
         if (genType.id === 'vanilla')
@@ -51,6 +51,8 @@ async function run() {
         await writeBaseModel(fixPath(dir, 'models', `${baseItem}.json`), baseItem, id);
         await createModel(fixPath(dir, 'models', `sacred_treasure/${id}.json`), texPath!);
         if (genType.id !== 'vanilla') await applyTexture(fixPath(dir, 'textures', `sacred_treasure/${id}.png`), texture!, animCfg);
+
+        showInfo('生成したよ！');
     } catch (e) {
         if (e instanceof UserCancelledError) return;
         if (e instanceof Error) showError(e.message);
