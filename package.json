@@ -2,13 +2,17 @@
 	"name": "tsb-resource-pack-generator",
 	"displayName": "TSB Resource pack Generator",
 	"description": "",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"engines": {
 		"vscode": "^1.52.0"
 	},
 	"categories": [
 		"Other"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/TheSkyBlock/resource-pack-generator.git"
+	},
 	"license": "MIT",
 	"publisher": "ChenCMD",
 	"author": "ChenCMD",
