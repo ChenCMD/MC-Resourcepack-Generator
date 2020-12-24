@@ -1,4 +1,4 @@
-type GenerateType = 'single' | 'animation' | 'vanilla'/* | '3D'*/;
+export type GenerateType = 'single' | 'animation' | 'vanilla'/* | '3D'*/;
 
 export function getGenTypeMap(): Map<GenerateType, string> {
     const res = new Map<GenerateType, string>();

@@ -27,7 +27,17 @@
 				"title": "Resource Pack Generator",
 				"category": "ResourcePack"
 			}
-		]
+		],
+		"configuration": {
+			"title": "MC Resourcepack Generator",
+			"properties": {
+				"mcrg.customizeInjectFolder": {
+					"type": "string",
+					"pattern": "^[^\\\\:*?\"<>|]+$",
+					"description": "生成するフォルダ"
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "webpack --mode production",
