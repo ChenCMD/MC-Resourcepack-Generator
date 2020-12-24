@@ -20,8 +20,8 @@ export function createAnimationMcmeta(interpolate: QuickPickItemHasId<BooleanLik
 export function getInterpolateMap(): Map<BooleanLikeString, string> {
     const res = new Map<BooleanLikeString, string>();
 
-    res.set('true', '単体テクスチャ');
-    res.set('false', 'アニメーションテクスチャ');
+    res.set('true', 'interpolate(フレーム間補完)を有効にする');
+    res.set('false', 'interpolate(フレーム間補完)を無効にする');
 
     return res;
 }
