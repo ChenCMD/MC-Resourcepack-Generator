@@ -1,7 +1,7 @@
 import * as fs from 'fs';
+import * as fsp from 'fs/promises';
 import { TextEncoder } from 'util';
 import { FileSystemError, Uri, workspace } from 'vscode';
-const fsp = fs.promises;
 
 function flatPath(pathOrUri: string | Uri) {
     return pathOrUri instanceof Uri ? pathOrUri : Uri.file(pathOrUri);

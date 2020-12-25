@@ -44,7 +44,7 @@ export class ResourcePackGenerator {
     }
 
     async listenTextureFile(): Promise<void> {
-        this.texturePng = await listenDir('テクスチャファイルを選択', '選択', this.getOption(false));
+        this.texturePng = await listenDir('テクスチャファイルを選択', '選択', ResourcePackGenerator.getOption(false));
     }
 
     async listenAnimationSetting(): Promise<void> {
@@ -54,16 +54,23 @@ export class ResourcePackGenerator {
     }
 
     async generate(): Promise<void> {
-        if (!this.hasAllRequiredProperty()) return;
+        if (!(
+            this.generateDirectory
+            && this.generateType
+            && this.cmdID
+            && this.baseItem
+            && ((this.generateType === 'vanilla' && this.texturePath) || (this.generateType !== 'vanilla' && this.texturePng))
+        ))
+            return;
 
         const injectPath = (path: string) => this.interjectFolder ? `${this.interjectFolder}/${path}` : path;
         const makePath = (category: string, ...itemAfter: string[]) => fixPath(this.generateDirectory!, category, ...itemAfter);
 
-        const fallbackTexturePath = `item/${injectPath(this.cmdID!.toString())}`;
+        const fallbackTexturePath = `item/${injectPath(this.cmdID.toString())}`;
 
-        await writeBaseModel(makePath('models', `${this.baseItem}.json`), this.baseItem!, this.cmdID!);
+        await writeBaseModel(makePath('models', `${this.baseItem}.json`), this.baseItem, this.cmdID);
         await createModel(makePath('models', injectPath(`${this.cmdID}.json`)), this.texturePath || fallbackTexturePath);
-        if (this.generateType === 'single' || this.generateType === 'animation')
+        if (this.generateType !== 'vanilla')
             await applyTexture(makePath('textures', injectPath(`${this.cmdID}.png`)), this.texturePng!, this.animSetting);
     }
 
@@ -71,15 +78,9 @@ export class ResourcePackGenerator {
         return this.generateType;
     }
 
-    private hasAllRequiredProperty(): boolean {
-        const res = !!this.generateDirectory && !!this.generateType && !!this.cmdID && !!this.baseItem
-            && ((this.generateType === 'vanilla' && !!this.texturePath) || this.generateType !== 'vanilla' && !!this.texturePng);
-        return res;
-    }
-
-    private getOption(canSelectMany: false): ListenDirOption & { canSelectMany: false };
-    private getOption(canSelectMany: true): ListenDirOption & { canSelectMany: true };
-    private getOption(canSelectMany: boolean): ListenDirOption {
+    private static getOption(canSelectMany: false): ListenDirOption & { canSelectMany: false };
+    private static getOption(canSelectMany: true): ListenDirOption & { canSelectMany: true };
+    private static getOption(canSelectMany: boolean): ListenDirOption {
         return { canSelectFiles: true, canSelectFolders: false, canSelectMany, filters: { 'png': ['png'] } };
     }
 }
