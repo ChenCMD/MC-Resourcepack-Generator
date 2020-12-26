@@ -14,7 +14,10 @@ export interface Model {
 
 export function createModelTemplate(item: string): Model {
     const modelTemplate: Model = {
-        parent: `item/${item}`,
+        parent: 'item/handheld_rod',
+        textures: {
+            layer0: `item/${item}`
+        },
         overrides: []
     };
     for (let i = 1; i <= 500; i++) {
