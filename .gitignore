@@ -4,4 +4,3 @@ out
 node_modules
 .vscode-test/
 *.vsix
-.vscode/*

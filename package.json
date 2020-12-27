@@ -41,7 +41,8 @@
 	},
 	"scripts": {
 		"vscode:prepublish": "webpack --mode production",
-		"compile": "webpack --mode development"
+		"build": "tsc -p ./",
+		"watch": "tsc -w"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
