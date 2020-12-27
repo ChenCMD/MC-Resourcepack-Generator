@@ -14,13 +14,12 @@ export function fixPath(dir: Uri, type: string, ...itemAfter: string[]): Uri {
     return Uri.joinPath(dir, 'assets/minecraft', type, 'item', ...itemAfter);
 }
 
-export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number): Promise<void> {
+export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, texPath: string): Promise<void> {
     const model: Model = await pathAccessible(dir) ? JSON.parse(await readFile(dir)) : createModelTemplate(baseItem);
     if (!model.overrides) model.overrides = [];
     model.overrides.forEach(v => {
         if (!v.predicate) return;
-        if (v.predicate.custom_model_data === cmdID)
-            v.model = `item/sacred_treasure/${cmdID}`;
+        if (v.predicate.custom_model_data === cmdID) v.model = `item/${texPath}`;
     });
     writeFile(dir, JSON.stringify(model, undefined, ' '.repeat(4)));
 }

@@ -62,13 +62,12 @@ export class ResourcePackGenerator {
             && ((this.generateType === 'vanilla' && this.texturePath) || (this.generateType !== 'vanilla' && this.texturePng))
         ))
             return;
-
         const injectPath = (path: string) => this.interjectFolder ? `${this.interjectFolder}/${path}` : path;
         const makePath = (category: string, ...itemAfter: string[]) => fixPath(this.generateDirectory!, category, ...itemAfter);
 
         const fallbackTexturePath = `item/${injectPath(this.cmdID.toString())}`;
 
-        await writeBaseModel(makePath('models', `${this.baseItem}.json`), this.baseItem, this.cmdID);
+        await writeBaseModel(makePath('models', `${this.baseItem}.json`), this.baseItem, this.cmdID, injectPath(this.cmdID.toString()));
         await createModel(makePath('models', injectPath(`${this.cmdID}.json`)), this.texturePath || fallbackTexturePath);
         if (this.generateType !== 'vanilla')
             await applyTexture(makePath('textures', injectPath(`${this.cmdID}.png`)), this.texturePng!, this.animSetting);
