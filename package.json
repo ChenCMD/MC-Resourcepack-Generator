@@ -33,7 +33,7 @@
 			"properties": {
 				"mcrg.customizeInjectFolder": {
 					"type": "string",
-					"pattern": "^[^\\\\:*?\"<>|]+$",
+					"pattern": "^[^\\\\:*?\"<>|]*$",
 					"description": "生成するフォルダ"
 				}
 			}
