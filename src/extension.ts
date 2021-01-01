@@ -22,36 +22,8 @@ async function run() {
         const config = constructConfig(workspace.getConfiguration('mcrg'));
         // Generator
         const generator = new ResourcePackGenerator(config);
-        // 生成するディレクトリ
-        await generator.listenDir();
-        // 生成する種類
-        await generator.listenGenType();
-        // CustomModelDataのID
-        await generator.listenCustomModelDataID();
-        // 元となるアイテム
-        await generator.listenBaseItem();
-        // 生成する種類について処理の分岐
-        switch (generator.getGenType()) {
-            case 'vanilla':
-                // 参照するバニラテクスチャのパス
-                await generator.listenTexturePath();
-
-                break;
-            case 'single':
-                // テクスチャファイル
-                await generator.listenTextureFile();
-
-                break;
-            case 'animation':
-                // テクスチャファイル
-                await generator.listenTextureFile();
-                // アニメーションテクスチャの設定
-                await generator.listenAnimationSetting();
-
-                break;
-        }
-        // 生成
-        await generator.generate();
+        // 実行
+        await generator.run();
         // 終了メッセージ
         showInfo('生成したよ！');
     } catch (e) {

@@ -1,22 +1,19 @@
 import { Uri } from 'vscode';
-import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from './types/AnimationMcMeta';
+import { AbstractNode } from './types/AbstractNode';
 import { Config } from './types/Config';
+import { GeneratorContext } from './types/Context';
 import { GenerateError } from './types/Error';
-import { GenerateType, getGenTypeMap } from './types/GenerateType';
-import { createQuickPickItemHasIds } from './types/QuickPickItemHasId';
-import { intValidater, itemValidater, pathValidater } from './types/Validater';
-import { applyTexture, createModel, fixPath, isResourcepackRoot, writeBaseModel } from './util/common';
+import { getGenTypeMap } from './types/GenerateType';
+import { createQuickPickItemHasNodes } from './types/QuickPickItemHasNode';
+import { intValidater, itemValidater } from './types/Validater';
+import { injectPath, isResourcepackRoot, makeUri, writeBaseModel } from './util/common';
 import { listenDir, ListenDirOption, listenInput, listenPickItem } from './util/vscodeWrapper';
 
 export class ResourcePackGenerator {
-    private generateDirectory?: Uri;
-    private generateType?: GenerateType;
-    private cmdID?: number;
-    private baseItem?: string;
-
-    private texturePath?: string;
-    private texturePng?: Uri;
-    private animSetting?: AnimationMcmeta;
+    private generateDirectory!: Uri;
+    private generateNode!: AbstractNode;
+    private id!: number;
+    private baseItem!: string;
 
     private readonly interjectFolder: string;
 
@@ -24,67 +21,56 @@ export class ResourcePackGenerator {
         this.interjectFolder = config.customizeInjectFolder;
     }
 
-    async listenDir(): Promise<void> {
+    async run(): Promise<void> {
+        // 生成するディレクトリ
+        await this.listenDir();
+        // 元となるアイテム
+        await this.listenBaseItem();
+        // CustomModelDataのID
+        await this.listenID();
+        // 生成する種類
+        await this.listenGenType();
+        // 生成する種類について処理の分岐
+        await this.generateNode.childQuestion();
+        // 生成
+        await this.generate();
+    }
+
+    private async listenDir(): Promise<void> {
         const res = await listenDir('リソースパックフォルダを選択', '選択');
         if (!await isResourcepackRoot(res.fsPath)) throw new GenerateError('選択したディレクトリはリソースパックフォルダじゃないよ。');
         this.generateDirectory = res;
     }
 
-    async listenGenType(): Promise<void> {
-        const res = await listenPickItem('生成タイプを選択してください', createQuickPickItemHasIds(getGenTypeMap()), false);
-        this.generateType = res.id;
+    private async listenGenType(): Promise<void> {
+        const res = await listenPickItem('生成タイプを選択してください', createQuickPickItemHasNodes(getGenTypeMap()), false);
+        this.generateNode = res.node;
     }
 
-    async listenCustomModelDataID(): Promise<void> {
+    private async listenID(): Promise<void> {
         const res = await listenInput('CustomModelDataのID', v => intValidater(v, '有効な数値を入力してください'));
-        this.cmdID = Number.parseInt(res);
+        this.id = Number.parseInt(res);
     }
 
-    async listenBaseItem(): Promise<void> {
+    private async listenBaseItem(): Promise<void> {
         this.baseItem = await listenInput('元となるアイテムのitemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`));
     }
 
-    async listenTexturePath(): Promise<void> {
-        this.texturePath = await listenInput('テクスチャのパス', v => pathValidater(v, 'パスはitem/又はblock/から始まる必要があります。'));
+    private async generate(): Promise<void> {
+        const dir = makeUri(this.generateDirectory, 'models', `${this.baseItem}.json`);
+        await writeBaseModel(dir, this.baseItem, this.id, injectPath(this.interjectFolder, this.id.toString()));
+        const ctx: GeneratorContext = {
+            baseItem: this.baseItem,
+            generateDirectory: this.generateDirectory,
+            id: this.id,
+            interjectFolder: this.interjectFolder
+        };
+        this.generateNode.generate(ctx);
     }
 
-    async listenTextureFile(): Promise<void> {
-        this.texturePng = await listenDir('テクスチャファイルを選択', '選択', ResourcePackGenerator.getOption(false));
-    }
-
-    async listenAnimationSetting(): Promise<void> {
-        const interpolate = await listenPickItem('フレーム間補完を有効にしますか？', createQuickPickItemHasIds(getInterpolateMap()), false);
-        const frametime = await listenInput('フレームの推移速度', v => intValidater(v, '有効な数値を入力してください'));
-        this.animSetting = createAnimationMcmeta(interpolate, frametime);
-    }
-
-    async generate(): Promise<void> {
-        if (!(
-            this.generateDirectory
-            && this.generateType
-            && this.cmdID
-            && this.baseItem
-            && ((this.generateType === 'vanilla' && this.texturePath) || (this.generateType !== 'vanilla' && this.texturePng))
-        ))
-            return;
-        const injectPath = (path: string) => this.interjectFolder ? `${this.interjectFolder}/${path}` : path;
-        const makePath = (category: string, ...itemAfter: string[]) => fixPath(this.generateDirectory!, category, ...itemAfter);
-
-        const fallbackTexturePath = `item/${injectPath(this.cmdID.toString())}`;
-
-        await writeBaseModel(makePath('models', `${this.baseItem}.json`), this.baseItem, this.cmdID, injectPath(this.cmdID.toString()));
-        await createModel(makePath('models', injectPath(`${this.cmdID}.json`)), this.texturePath || fallbackTexturePath);
-        if (this.generateType !== 'vanilla')
-            await applyTexture(makePath('textures', injectPath(`${this.cmdID}.png`)), this.texturePng!, this.animSetting);
-    }
-
-    getGenType(): GenerateType | undefined {
-        return this.generateType;
-    }
-
-    private static getOption(canSelectMany: false): ListenDirOption & { canSelectMany: false };
-    private static getOption(canSelectMany: true): ListenDirOption & { canSelectMany: true };
-    private static getOption(canSelectMany: boolean): ListenDirOption {
+    static getOption(canSelectMany: false): ListenDirOption & { canSelectMany: false };
+    static getOption(canSelectMany: true): ListenDirOption & { canSelectMany: true };
+    static getOption(canSelectMany: boolean): ListenDirOption {
         return { canSelectFiles: true, canSelectFolders: false, canSelectMany, filters: { 'png': ['png'] } };
     }
 }

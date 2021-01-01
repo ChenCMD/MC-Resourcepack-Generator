@@ -10,8 +10,13 @@ export async function isResourcepackRoot(testPath: string): Promise<boolean> {
     return await pathAccessible(path.join(testPath, 'pack.mcmeta')) && await pathAccessible(path.join(testPath, 'assets'));
 }
 
-export function fixPath(dir: Uri, type: string, ...itemAfter: string[]): Uri {
-    return Uri.joinPath(dir, 'assets/minecraft', type, 'item', ...itemAfter);
+// eslint-disable-next-line no-shadow
+export function injectPath(interjectFolder: string, path: string): string {
+    return interjectFolder ? `${interjectFolder}/${path}` : path;
+}
+
+export function makeUri(generateDirectory: Uri, category: string, ...itemAfter: string[]): Uri {
+    return Uri.joinPath(generateDirectory, 'assets/minecraft', category, 'item', ...itemAfter);
 }
 
 export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, texPath: string): Promise<void> {
