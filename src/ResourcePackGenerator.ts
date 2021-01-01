@@ -1,5 +1,6 @@
 import { Uri } from 'vscode';
 import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from './types/AnimationMcMeta';
+import { Config } from './types/Config';
 import { GenerateError } from './types/Error';
 import { GenerateType, getGenTypeMap } from './types/GenerateType';
 import { createQuickPickItemHasIds } from './types/QuickPickItemHasId';
@@ -17,7 +18,11 @@ export class ResourcePackGenerator {
     private texturePng?: Uri;
     private animSetting?: AnimationMcmeta;
 
-    constructor(private readonly interjectFolder?: string) { }
+    private readonly interjectFolder: string;
+
+    constructor(config: Config) {
+        this.interjectFolder = config.customizeInjectFolder;
+    }
 
     async listenDir(): Promise<void> {
         const res = await listenDir('リソースパックフォルダを選択', '選択');

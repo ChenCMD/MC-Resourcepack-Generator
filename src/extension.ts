@@ -1,5 +1,6 @@
-import { commands, Disposable, ExtensionContext, window } from 'vscode';
+import { commands, Disposable, ExtensionContext, window, workspace } from 'vscode';
 import { ResourcePackGenerator } from './ResourcePackGenerator';
+import { constructConfig } from './types/Config';
 import { UserCancelledError } from './types/Error';
 import { showError, showInfo } from './util/vscodeWrapper';
 
@@ -18,8 +19,9 @@ export function deactivate(): void { }
 
 async function run() {
     try {
+        const config = constructConfig(workspace.getConfiguration('mcrg'));
         // Generator
-        const generator = new ResourcePackGenerator();
+        const generator = new ResourcePackGenerator(config);
         // 生成するディレクトリ
         await generator.listenDir();
         // 生成する種類
