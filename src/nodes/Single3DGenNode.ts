@@ -4,7 +4,7 @@ import { ThreeDimension } from '../types/ThreeDimension';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { readFile } from '../util/file';
 
-export class Single2DGenNode extends ThreeDimension {
+export class Single3DGenNode extends ThreeDimension {
     async childQuestion(): Promise<void> {
         await this.listenModelFile();
         await this.listenTextureFiles();
