@@ -33,6 +33,7 @@ export interface ListenDirOption {
     canSelectFiles?: boolean;
     canSelectFolders?: boolean;
     canSelectMany?: boolean;
+    defaultUri?: Uri;
     filters?: { [key: string]: string[]; };
 }
 
@@ -43,7 +44,7 @@ export async function listenDir(title: string, openLabel: string, option: Listen
         canSelectFiles: option.canSelectFiles ?? false,
         canSelectFolders: option.canSelectFolders ?? true,
         canSelectMany: option.canSelectMany ?? false,
-        defaultUri: workspace.workspaceFolders?.[0].uri,
+        defaultUri: option.defaultUri ?? workspace.workspaceFolders?.[0].uri,
         openLabel,
         title,
         filters: option.filters

@@ -68,9 +68,9 @@ export class ResourcePackGenerator {
         this.generateNode.generate(ctx);
     }
 
-    static getOption(canSelectMany: false): ListenDirOption & { canSelectMany: false };
-    static getOption(canSelectMany: true): ListenDirOption & { canSelectMany: true };
-    static getOption(canSelectMany: boolean): ListenDirOption {
-        return { canSelectFiles: true, canSelectFolders: false, canSelectMany, filters: { 'png': ['png'] } };
+    static getOption(canSelectMany: false, defaultUri?: Uri): ListenDirOption & { canSelectMany: false };
+    static getOption(canSelectMany: true, defaultUri?: Uri): ListenDirOption & { canSelectMany: true };
+    static getOption(canSelectMany: boolean, defaultUri?: Uri): ListenDirOption {
+        return { canSelectFiles: true, canSelectFolders: false, canSelectMany, filters: { 'png': ['png'] }, defaultUri };
     }
 }

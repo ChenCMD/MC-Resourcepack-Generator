@@ -8,10 +8,10 @@ export class Single2DGenNode extends TwoDimension {
     }
 
     async generate(ctx: GeneratorContext): Promise<void> {
-        const modelPath = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
-        await createModel(modelPath, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
+        const modelUri = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
+        await createModel(modelUri, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
 
-        const texPath = makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}.png`));
-        await applyTexture(texPath, this.texturePng);
+        const texUri = makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}.png`));
+        await applyTexture(texUri, this.texturePng);
     }
 }
