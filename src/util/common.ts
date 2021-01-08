@@ -29,8 +29,7 @@ export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, 
     writeFile(dir, JSON.stringify(model, undefined, ' '.repeat(4)));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function createModel(modelUri: Uri, texPathOrModel: string | { [key: string]: any }): Promise<void> {
+export async function createModel(modelUri: Uri, texPathOrModel: string | Model): Promise<void> {
     if (await pathAccessible(modelUri)) throw new GenerateError(`${modelUri.fsPath} はすでに生成されています。`);
     const content = typeof texPathOrModel !== 'string' ? texPathOrModel : {
         parent: 'item/generated',

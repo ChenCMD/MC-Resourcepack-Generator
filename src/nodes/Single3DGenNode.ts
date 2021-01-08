@@ -1,5 +1,6 @@
 import path from 'path';
 import { GeneratorContext } from '../types/Context';
+import { Model } from '../types/Model';
 import { ThreeDimension } from '../types/ThreeDimension';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { readFile } from '../util/file';
@@ -12,11 +13,14 @@ export class Single3DGenNode extends ThreeDimension {
 
     async generate(ctx: GeneratorContext): Promise<void> {
         const modelPath = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
-        await createModel(modelPath, JSON.parse(await readFile(this.modelUri)));
+        const modelData: Model = JSON.parse(await readFile(this.modelUri));
+        for (const tex of Object.keys(modelData.textures ?? {}))
+            modelData.textures![tex] = `item/${ctx.id}/${tex.split(/(\/|\\)/).pop()}`;
+        await createModel(modelPath, modelData);
 
         const texUri = (name: string) =>
-            makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}.png`));
+            makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}`));
         for (const png of this.texturePngs)
-            await applyTexture(texUri(path.parse(png.fsPath).name), png);
+            await applyTexture(texUri(path.basename(png.fsPath)), png);
     }
 }

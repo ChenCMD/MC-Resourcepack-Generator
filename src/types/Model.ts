@@ -9,7 +9,7 @@ export interface Model {
     }[],
     textures?: {
         layer0?: string
-    }
+    } & { [key: string]: string }
 }
 
 export function createModelTemplate(item: string): Model {
