@@ -14,13 +14,17 @@ export class Single3DGenNode extends ThreeDimension {
     async generate(ctx: GeneratorContext): Promise<void> {
         const modelPath = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
         const modelData: Model = JSON.parse(await readFile(this.modelUri));
-        for (const tex of Object.keys(modelData.textures ?? {}))
-            modelData.textures![tex] = `item/${ctx.id}/${tex.split(/(\/|\\)/).pop()}`;
-        await createModel(modelPath, modelData);
-
         const texUri = (name: string) =>
             makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}`));
-        for (const png of this.texturePngs)
-            await applyTexture(texUri(path.basename(png.fsPath)), png);
+
+        for (const tex of Object.keys(modelData.textures ?? {})) {
+            const lastStr = tex.split(/(\/|\\)/).pop();
+
+            if (this.texturePngs.some(png => path.basename(png.fsPath) === lastStr))
+                modelData.textures![tex] = `item/${ctx.id}/${lastStr}`;
+        }
+
+        await createModel(modelPath, modelData);
+        this.texturePngs.forEach(async png => await applyTexture(texUri(path.basename(png.fsPath)), png));
     }
 }
