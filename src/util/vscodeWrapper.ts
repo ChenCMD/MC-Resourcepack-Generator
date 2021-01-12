@@ -45,12 +45,12 @@ interface Options {
 
 export function getOption(canSelectMany: false, opt?: Options): ListenDirOption & { canSelectMany: false };
 export function getOption(canSelectMany: true, opt?: Options): ListenDirOption & { canSelectMany: true };
-export function getOption(canSelectMany: boolean, opt: Options = { filter: 'png' }): ListenDirOption {
+export function getOption(canSelectMany: boolean, opt: Options = {}): ListenDirOption {
     return {
         canSelectFiles: true,
         canSelectFolders: false,
         canSelectMany,
-        filters: opt.filter === 'png' ? { png: ['png'] } : { model: ['json'] },
+        filters: (opt.filter ?? 'png') === 'png' ? { png: ['png'] } : { model: ['json'] },
         defaultUri: opt.defaultUri
     };
 }

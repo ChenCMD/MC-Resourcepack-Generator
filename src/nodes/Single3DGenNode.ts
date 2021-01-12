@@ -18,10 +18,10 @@ export class Single3DGenNode extends ThreeDimension {
             makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}`));
 
         for (const tex of Object.keys(modelData.textures ?? {})) {
-            const lastStr = tex.split(/(\/|\\)/).pop();
+            const lastStr = modelData.textures![tex].split(/(\/|\\)/).pop();
 
-            if (this.texturePngs.some(png => path.basename(png.fsPath) === lastStr))
-                modelData.textures![tex] = `item/${ctx.id}/${lastStr}`;
+            if (this.texturePngs.some(png => path.basename(png.fsPath, '.png') === lastStr))
+                modelData.textures![tex] = `item/${injectPath(ctx.interjectFolder, `${ctx.id}/${lastStr}`)}`;
         }
 
         await createModel(modelPath, modelData);
