@@ -7,7 +7,7 @@ import { getGenTypeMap } from './types/GenerateType';
 import { createQuickPickItemHasNodes } from './types/QuickPickItemHasNode';
 import { intValidater, itemValidater } from './types/Validater';
 import { injectPath, isResourcepackRoot, makeUri, writeBaseModel } from './util/common';
-import { listenDir, ListenDirOption, listenInput, listenPickItem } from './util/vscodeWrapper';
+import { listenDir, listenInput, listenPickItem } from './util/vscodeWrapper';
 
 export class ResourcePackGenerator {
     private generateDirectory!: Uri;
@@ -66,11 +66,5 @@ export class ResourcePackGenerator {
             interjectFolder: this.interjectFolder
         };
         this.generateNode.generate(ctx);
-    }
-
-    static getOption(canSelectMany: false, defaultUri?: Uri): ListenDirOption & { canSelectMany: false };
-    static getOption(canSelectMany: true, defaultUri?: Uri): ListenDirOption & { canSelectMany: true };
-    static getOption(canSelectMany: boolean, defaultUri?: Uri): ListenDirOption {
-        return { canSelectFiles: true, canSelectFolders: false, canSelectMany, filters: { 'png': ['png'] }, defaultUri };
     }
 }

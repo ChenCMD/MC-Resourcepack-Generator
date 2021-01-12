@@ -30,15 +30,33 @@ export function validater(v: string, validatePattern: RegExp, emptyMessage: stri
 }
 
 export interface ListenDirOption {
-    canSelectFiles?: boolean;
-    canSelectFolders?: boolean;
-    canSelectMany?: boolean;
-    defaultUri?: Uri;
-    filters?: { [key: string]: string[]; };
+    canSelectFiles?: boolean
+    canSelectFolders?: boolean
+    canSelectMany?: boolean
+    defaultUri?: Uri
+    filters?: { [key: string]: string[] }
 }
 
-export async function listenDir(title: string, openLabel: string, otherOption?: ListenDirOption & {canSelectMany?: false}): Promise<Uri>;
-export async function listenDir(title: string, openLabel: string, otherOption?: ListenDirOption & {canSelectMany: true}): Promise<Uri[]>;
+export type Filter = 'png' | 'model';
+interface Options {
+    defaultUri?: Uri
+    filter?: Filter
+}
+
+export function getOption(canSelectMany: false, opt?: Options): ListenDirOption & { canSelectMany: false };
+export function getOption(canSelectMany: true, opt?: Options): ListenDirOption & { canSelectMany: true };
+export function getOption(canSelectMany: boolean, opt: Options = { filter: 'png' }): ListenDirOption {
+    return {
+        canSelectFiles: true,
+        canSelectFolders: false,
+        canSelectMany,
+        filters: opt.filter === 'png' ? { png: ['png'] } : { model: ['json'] },
+        defaultUri: opt.defaultUri
+    };
+}
+
+export async function listenDir(title: string, openLabel: string, otherOption?: ListenDirOption & { canSelectMany?: false }): Promise<Uri>;
+export async function listenDir(title: string, openLabel: string, otherOption?: ListenDirOption & { canSelectMany: true }): Promise<Uri[]>;
 export async function listenDir(title: string, openLabel: string, option: ListenDirOption = {}): Promise<Uri | Uri[]> {
     const ans = await window.showOpenDialog({
         canSelectFiles: option.canSelectFiles ?? false,
