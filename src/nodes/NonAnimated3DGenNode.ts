@@ -8,7 +8,7 @@ import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { readFile } from '../util/file';
 import { listenDir, getOption } from '../util/vscodeWrapper';
 
-export class Single3DGenNode implements ThreeDimension, NonAnimation {
+export class NonAnimated3DGenNode implements ThreeDimension, NonAnimation {
     modelUri!: Uri;
     textureUris!: Uri[];
 

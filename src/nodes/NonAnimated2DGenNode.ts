@@ -5,7 +5,7 @@ import { NonAnimation } from '../types/NonAnimation';
 import { Uri } from 'vscode';
 import { listenDir, getOption } from '../util/vscodeWrapper';
 
-export class Single2DGenNode implements TwoDimension, NonAnimation {
+export class NonAnimated2DGenNode implements TwoDimension, NonAnimation {
     textureUri!: Uri;
 
     async childQuestion(): Promise<void> {
