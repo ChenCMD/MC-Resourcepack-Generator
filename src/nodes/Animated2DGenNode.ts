@@ -4,14 +4,17 @@ import { createQuickPickItemHasIds } from '../types/QuickPickItemHasId';
 import { intValidater } from '../types/Validater';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
+import { Uri, workspace } from 'vscode';
+import sharp from 'sharp';
 import { AbstractNode } from '../types/AbstractNode';
 
 
 export class Animated2DGenNode implements AbstractNode {
+    textureUris!: Uri[];
     animSetting!: AnimationMcmeta;
 
     async childQuestion(): Promise<void> {
-        this.textureUri = await this.listenTextureFile();
+        this.textureUris = await this.listenTextureFile();
         this.animSetting = await this.listenAnimationSetting();
     }
 
@@ -20,14 +23,24 @@ export class Animated2DGenNode implements AbstractNode {
         const modelUri = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
         await createModel(modelUri, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
 
+        // テクスチャを結合してglobalStorageに書き出し
+        const base = sharp(this.textureUris[0].fsPath);
+        const height = (await base.metadata()).height!;
+
+        base.extend({ top: 0, bottom: height * (this.textureUris.length - 1), left: 0, right: 0 });
+        base.composite(this.textureUris.slice(1).map((tex, i) => ({ input: tex.fsPath, top: (i + 1) * height, left: 0 })));
+
+        await base.png().toFile(ctx.globalStorageUri.fsPath);
         // textureファイルの出力
         const texUri = makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}.png`));
-        await applyTexture(texUri, this.textureUri, this.animSetting);
+        await applyTexture(texUri, ctx.globalStorageUri, this.animSetting);
+        // 要らないファイル消す
+        await workspace.fs.delete(ctx.globalStorageUri);
     }
 
-    async listenTextureFile(): Promise<Uri> {
+    async listenTextureFile(): Promise<Uri[]> {
         const textures = await listenDir('テクスチャファイルを選択', '選択', getOption(true));
-        return textures[0];
+        return textures.sort((a, b) => a.fsPath > b.fsPath ? 1 : -1);
     }
 
     async listenAnimationSetting(): Promise<AnimationMcmeta> {

@@ -5,4 +5,5 @@ export interface GeneratorContext {
     id: number
     baseItem: string
     interjectFolder: string
+    globalStorageUri: Uri
 }

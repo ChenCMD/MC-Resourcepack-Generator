@@ -17,7 +17,7 @@ export class ResourcePackGenerator {
 
     private readonly interjectFolder: string;
 
-    constructor(config: Config) {
+    constructor(config: Config, private readonly globalStorageUri: Uri) {
         this.interjectFolder = config.customizeInjectFolder;
     }
 
@@ -63,8 +63,9 @@ export class ResourcePackGenerator {
             baseItem: this.baseItem,
             generateDirectory: this.generateDirectory,
             id: this.id,
-            interjectFolder: this.interjectFolder
+            interjectFolder: this.interjectFolder,
+            globalStorageUri: this.globalStorageUri
         };
-        this.generateNode.generate(ctx);
+        await this.generateNode.generate(ctx);
     }
 }

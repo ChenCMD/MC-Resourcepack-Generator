@@ -1,12 +1,15 @@
 /* eslint-disable */
 
 'use strict';
+const fs = require('fs');
 
 const path = require('path');
 
-/**
- * @type {import('webpack').Configuration}
- */
+const nodeModules = {};
+fs.readdirSync('node_modules')
+    .filter(item => ['.bin'].indexOf(item) === -1)
+    .forEach(mod => nodeModules[mod] = 'commonjs ' + mod);
+
 module.exports = {
     target: 'node',
     entry: './src/extension.ts',
@@ -18,6 +21,7 @@ module.exports = {
     },
     devtool: 'source-map',
     externals: {
+        ...nodeModules,
         vscode: 'commonjs vscode'
     },
     resolve: {

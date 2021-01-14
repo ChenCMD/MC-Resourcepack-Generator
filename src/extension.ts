@@ -10,18 +10,18 @@ export function activate(context: ExtensionContext): void {
 
     const disposable: Disposable[] = [];
 
-    disposable.push(commands.registerCommand('mc-resourcepack-generator.gen', run));
+    disposable.push(commands.registerCommand('mc-resourcepack-generator.gen', () => run(context)));
 
     context.subscriptions.push(...disposable);
 }
 
 export function deactivate(): void { }
 
-async function run() {
+async function run(context: ExtensionContext) {
     try {
         const config = constructConfig(workspace.getConfiguration('mcrg'));
         // Generator
-        const generator = new ResourcePackGenerator(config);
+        const generator = new ResourcePackGenerator(config, context.globalStorageUri);
         // 実行
         await generator.run();
         // 終了メッセージ
