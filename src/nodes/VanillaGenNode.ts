@@ -16,6 +16,7 @@ export class VanillaGenNode implements AbstractNode {
     }
 
     async generate(ctx: GeneratorContext): Promise<void> {
+        // モデルファイルの生成
         const path = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
         await createModel(path, this.texturePath);
     }

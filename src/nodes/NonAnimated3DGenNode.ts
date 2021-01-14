@@ -1,14 +1,13 @@
 import path from 'path';
 import { Uri } from 'vscode';
+import { AbstractNode } from '../types/AbstractNode';
 import { GeneratorContext } from '../types/Context';
 import { Model } from '../types/Model';
-import { NonAnimation } from '../types/NonAnimation';
-import { ThreeDimension } from '../types/ThreeDimension';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { readFile } from '../util/file';
 import { listenDir, getOption } from '../util/vscodeWrapper';
 
-export class NonAnimated3DGenNode implements ThreeDimension, NonAnimation {
+export class NonAnimated3DGenNode implements AbstractNode {
     modelUri!: Uri;
     textureUris!: Uri[];
 
@@ -23,6 +22,7 @@ export class NonAnimated3DGenNode implements ThreeDimension, NonAnimation {
         const texUri = (name: string) =>
             makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}`));
 
+        // modelファイルのtexture名書き換え
         for (const tex of Object.keys(modelData.textures ?? {})) {
             const lastStr = modelData.textures![tex].split(/(\/|\\)/).pop();
 
@@ -30,7 +30,9 @@ export class NonAnimated3DGenNode implements ThreeDimension, NonAnimation {
                 modelData.textures![tex] = `item/${injectPath(ctx.interjectFolder, `${ctx.id}/${lastStr}`)}`;
         }
 
+        // modelファイルの出力
         await createModel(modelPath, modelData);
+        // textureファイル
         this.textureUris.forEach(async png => await applyTexture(texUri(path.basename(png.fsPath)), png));
     }
 

@@ -4,13 +4,10 @@ import { createQuickPickItemHasIds } from '../types/QuickPickItemHasId';
 import { intValidater } from '../types/Validater';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
-import { Animation } from '../types/Animation';
-import { TwoDimension } from '../types/TwoDimension';
-import { Uri } from 'vscode';
+import { AbstractNode } from '../types/AbstractNode';
 
 
-export class Animated2DGenNode implements TwoDimension, Animation {
-    textureUri!: Uri;
+export class Animated2DGenNode implements AbstractNode {
     animSetting!: AnimationMcmeta;
 
     async childQuestion(): Promise<void> {
@@ -19,9 +16,11 @@ export class Animated2DGenNode implements TwoDimension, Animation {
     }
 
     async generate(ctx: GeneratorContext): Promise<void> {
+        // modelファイルの出力
         const modelUri = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
         await createModel(modelUri, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
 
+        // textureファイルの出力
         const texUri = makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}.png`));
         await applyTexture(texUri, this.textureUri, this.animSetting);
     }

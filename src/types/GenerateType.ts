@@ -1,8 +1,6 @@
 import { NonAnimated2DGenNode, Animated2DGenNode, NonAnimated3DGenNode, VanillaGenNode } from '../nodes';
 import { AbstractNode } from './AbstractNode';
 
-export type GenerateType = 'single' | 'animation' | 'vanilla'/* | '3D'*/;
-
 export function getGenTypeMap(): Map<string, AbstractNode> {
     const res = new Map<string, AbstractNode>();
 
