@@ -34,7 +34,7 @@
 				"mcrg.customizeInjectFolder": {
 					"type": "string",
 					"pattern": "^[^\\\\:*?\"<>|]*$",
-					"description": "生成するフォルダ"
+					"description": "テクスチャやmodelファイルを配置するフォルダ"
 				}
 			}
 		}
