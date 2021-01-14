@@ -5,14 +5,41 @@
     "tasks": [
         {
             "type": "npm",
-            "script": "build",
+            "script": "watch",
+            "problemMatcher": "$ts-webpack",
+            "isBackground": true,
+            "presentation": {
+                "reveal": "never"
+            },
+            "group": "build",
+            "label": "npm: watch",
+            "detail": "webpack --mode none --watch/"
+        },
+        {
+            "type": "npm",
+            "script": "lint",
+            "problemMatcher": "$eslint-stylish",
+            "label": "npm: lint",
+            "detail": "eslint src --ext ts"
+        },
+        {
+            "type": "npm",
+            "script": "compile",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": "$ts-webpack",
-            "label": "npm: build",
+            "problemMatcher": [],
+            "label": "npm: compile",
             "detail": "webpack --mode none"
+        },
+        {
+            "type": "npm",
+            "script": "build",
+            "group": "build",
+            "problemMatcher": [],
+            "label": "npm: build",
+            "detail": "webpack --mode production"
         }
     ]
 }

@@ -40,9 +40,11 @@
 		}
 	},
 	"scripts": {
-		"vscode:prepublish": "webpack --mode production",
-		"build": "webpack --mode development",
-		"watch": "tsc -w"
+		"compile": "webpack --mode development",
+		"build": "webpack --mode production",
+		"watch": "webpack --mode none --watch/",
+		"lint": "eslint --fix src/**/*.ts",
+		"release": "semantic-release"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.1.3",
