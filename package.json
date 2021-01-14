@@ -15,7 +15,11 @@
 	},
 	"license": "MIT",
 	"publisher": "ChenCMD",
-	"author": "ChenCMD",
+	"author": {
+		"name": "ChenCMD",
+		"url": "https://twitter.com/CMD__Cat",
+		"email": "scnmed.g@gmail.com"
+	},
 	"activationEvents": [
 		"onCommand:mc-resourcepack-generator.gen"
 	],
