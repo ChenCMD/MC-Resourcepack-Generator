@@ -1,6 +1,6 @@
 {
-	"name": "tsb-resource-pack-generator",
-	"displayName": "TSB Resource pack Generator",
+	"name": "mc-resourcepack-generator",
+	"displayName": "MC Resourcepack Generator",
 	"description": "",
 	"version": "1.1.3",
 	"engines": {
@@ -11,20 +11,20 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/TheSkyBlock/resource-pack-generator.git"
+		"url": "https://github.com/TheSkyBlock/resourcepack-generator.git"
 	},
 	"license": "MIT",
 	"publisher": "ChenCMD",
 	"author": "ChenCMD",
 	"activationEvents": [
-		"onCommand:tsb-resource-pack-generator.gen"
+		"onCommand:mc-resourcepack-generator.gen"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "tsb-resource-pack-generator.gen",
-				"title": "Resource Pack Generator",
+				"command": "mc-resourcepack-generator.gen",
+				"title": "Resourcepack Generator",
 				"category": "ResourcePack"
 			}
 		],

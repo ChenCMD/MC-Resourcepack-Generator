@@ -1,1 +1,1 @@
-# tsb-resource-pack-generator
+# mc-resourcepack-generator

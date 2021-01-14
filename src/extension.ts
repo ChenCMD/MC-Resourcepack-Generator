@@ -4,13 +4,13 @@ import { constructConfig } from './types/Config';
 import { UserCancelledError } from './types/Error';
 import { showError, showInfo } from './util/vscodeWrapper';
 
-export const codeConsole = window.createOutputChannel('TSB Resourcepack Generator');
+export const codeConsole = window.createOutputChannel('MC Resourcepack Generator');
 
 export function activate(context: ExtensionContext): void {
 
     const disposable: Disposable[] = [];
 
-    disposable.push(commands.registerCommand('tsb-resource-pack-generator.gen', run));
+    disposable.push(commands.registerCommand('mc-resourcepack-generator.gen', run));
 
     context.subscriptions.push(...disposable);
 }
