@@ -3,15 +3,19 @@ import { GeneratorContext } from '../types/Context';
 import { createQuickPickItemHasIds } from '../types/QuickPickItemHasId';
 import { intValidater } from '../types/Validater';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
-import { listenPickItem, listenInput } from '../util/vscodeWrapper';
+import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
 import { Animation } from '../types/Animation';
 import { TwoDimension } from '../types/TwoDimension';
+import { Uri } from 'vscode';
 
 
-export class Animated2DGenNode extends TwoDimension implements Animation {
+export class Animated2DGenNode implements TwoDimension, Animation {
+    textureUri!: Uri;
+    animSetting!: AnimationMcmeta;
+
     async childQuestion(): Promise<void> {
-        await this.listenTextureFile();
-        await this.listenAnimationSetting();
+        this.textureUri = await this.listenTextureFile();
+        this.animSetting = await this.listenAnimationSetting();
     }
 
     async generate(ctx: GeneratorContext): Promise<void> {
@@ -19,13 +23,17 @@ export class Animated2DGenNode extends TwoDimension implements Animation {
         await createModel(modelUri, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
 
         const texUri = makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}.png`));
-        await applyTexture(texUri, this.texturePng, this.animSetting);
+        await applyTexture(texUri, this.textureUri, this.animSetting);
     }
 
-    animSetting!: AnimationMcmeta;
-    async listenAnimationSetting(): Promise<void> {
+    async listenTextureFile(): Promise<Uri> {
+        const textures = await listenDir('テクスチャファイルを選択', '選択', getOption(true));
+        return textures[0];
+    }
+
+    async listenAnimationSetting(): Promise<AnimationMcmeta> {
         const interpolate = await listenPickItem('フレーム間補完を有効にしますか？', createQuickPickItemHasIds(getInterpolateMap()), false);
         const frametime = await listenInput('フレームの推移速度', v => intValidater(v, '有効な数値を入力してください'));
-        this.animSetting = createAnimationMcmeta(interpolate, frametime);
+        return createAnimationMcmeta(interpolate, frametime);
     }
 }
