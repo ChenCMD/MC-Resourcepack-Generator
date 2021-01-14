@@ -1,0 +1,28 @@
+{
+    "plugins": [
+        "semantic-release-gitmoji",
+        "@semantic-release/changelog",
+        [
+            "semantic-release-vsce",
+            {
+                "packageVsix": "mc-resourcepack-generator.vsix"
+            }
+        ],
+        [
+            "@semantic-release/github",
+            {
+                "assets": "mc-resourcepack-generator.vsix",
+                "releasedLabels": [
+                    ":rocket: released"
+                ]
+            }
+        ],
+        [
+            "@semantic-release/git",
+            {
+                "message": "🔖 v${nextRelease.version}\n\nhttps://github.com/ChenCMD/MC-Resourcepack-Generator/releases/tag/${nextRelease.gitTag}"
+            }
+        ]
+    ],
+    "branches": "release"
+}

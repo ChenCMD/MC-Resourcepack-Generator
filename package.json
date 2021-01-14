@@ -11,7 +11,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/TheSkyBlock/resourcepack-generator.git"
+		"url": "https://github.com/ChenCMD/MC-Resourcepack-Generator.git"
 	},
 	"license": "MIT",
 	"publisher": "ChenCMD",
@@ -47,6 +47,8 @@
 		"release": "semantic-release"
 	},
 	"devDependencies": {
+		"@semantic-release/changelog": "^5.0.1",
+		"@semantic-release/git": "^9.0.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "^14.0.27",
@@ -56,6 +58,9 @@
 		"eslint": "^7.6.0",
 		"glob": "^7.1.6",
 		"mocha": "^8.0.1",
+		"semantic-release": "^17.3.2",
+		"semantic-release-gitmoji": "^1.3.4",
+		"semantic-release-vsce": "^3.0.1",
 		"ts-loader": "^8.0.12",
 		"typescript": "^3.8.3",
 		"vscode-test": "^1.4.0",
