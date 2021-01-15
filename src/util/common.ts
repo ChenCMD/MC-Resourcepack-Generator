@@ -1,7 +1,7 @@
 import https from 'https';
 import path from 'path';
 import { Uri } from 'vscode';
-import { AnimationMcmeta } from '../types/AnimationMcMeta';
+import { AnimationMcmeta } from '../types/AnimationMcmeta';
 import { DownloadTimeOutError, GenerateError } from '../types/Error';
 import { createModelTemplate, Model } from '../types/Model';
 import { copyFile, createFile, pathAccessible, readFile, writeFile } from './file';

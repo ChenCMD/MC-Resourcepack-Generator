@@ -1,4 +1,4 @@
-import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../types/AnimationMcMeta';
+import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../types/AnimationMcmeta';
 import { GeneratorContext } from '../types/Context';
 import { createQuickPickItemHasIds } from '../types/QuickPickItemHasId';
 import { intValidater } from '../types/Validater';
