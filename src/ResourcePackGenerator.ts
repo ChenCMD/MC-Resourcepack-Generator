@@ -1,4 +1,4 @@
-import { Uri } from 'vscode';
+import { QuickPickItem, Uri } from 'vscode';
 import { AbstractNode } from './types/AbstractNode';
 import { Config } from './types/Config';
 import { GeneratorContext } from './types/Context';
@@ -16,9 +16,13 @@ export class ResourcePackGenerator {
     private baseItem!: string;
 
     private readonly interjectFolder: string;
+    private readonly version: string;
+    private readonly parentElement: QuickPickItem[];
 
     constructor(config: Config, private readonly globalStorageUri: Uri) {
         this.interjectFolder = config.customizeInjectFolder;
+        this.version = config.version;
+        this.parentElement = config.parentElement;
     }
 
     async run(): Promise<void> {
@@ -31,7 +35,7 @@ export class ResourcePackGenerator {
         // 生成する種類
         await this.listenGenType();
         // 生成する種類について処理の分岐
-        await this.generateNode.childQuestion();
+        await this.generateNode.childQuestion(this.parentElement);
         // 生成
         await this.generate();
     }
@@ -53,7 +57,7 @@ export class ResourcePackGenerator {
     }
 
     private async listenBaseItem(): Promise<void> {
-        this.baseItem = await listenInput('元となるアイテムのitemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`));
+        this.baseItem = await listenInput('元となるアイテムのitemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`, this.version));
     }
 
     private async generate(): Promise<void> {

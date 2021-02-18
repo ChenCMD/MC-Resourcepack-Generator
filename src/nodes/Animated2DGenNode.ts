@@ -1,21 +1,21 @@
 import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../types/AnimationMcmeta';
 import { GeneratorContext } from '../types/Context';
 import { createQuickPickItemHasIds } from '../types/QuickPickItemHasId';
-import { intValidater, pathValidater } from '../types/Validater';
+import { intValidater } from '../types/Validater';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
-import { Uri, workspace } from 'vscode';
+import { QuickPickItem, Uri, workspace } from 'vscode';
 import sharp from 'sharp';
 import { AbstractNode } from '../types/AbstractNode';
 
 
-export class Animated2DGenNode implements AbstractNode {
+export class Animated2DGenNode extends AbstractNode {
     private parent!: string;
     private textureUris!: Uri[];
     private animSetting!: AnimationMcmeta;
 
-    async childQuestion(): Promise<void> {
-        this.parent = await this.listenParentPath();
+    async childQuestion(parentElement: QuickPickItem[]): Promise<void> {
+        this.parent = await this.listenParentPath(parentElement);
         this.textureUris = await this.listenTextureFile();
         this.animSetting = await this.listenAnimationSetting();
     }
@@ -38,10 +38,6 @@ export class Animated2DGenNode implements AbstractNode {
         await applyTexture(texUri, ctx.globalStorageUri, this.animSetting);
         // 要らないファイル消す
         await workspace.fs.delete(ctx.globalStorageUri);
-    }
-
-    private async listenParentPath(): Promise<string> {
-        return await listenInput('parent', v => pathValidater(v, 'parentはitem/又はblock/から始まる必要があります。'));
     }
 
     private async listenTextureFile(): Promise<Uri[]> {

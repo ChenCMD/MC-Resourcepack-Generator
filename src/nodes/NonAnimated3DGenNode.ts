@@ -7,7 +7,7 @@ import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { readFile } from '../util/file';
 import { listenDir, getOption } from '../util/vscodeWrapper';
 
-export class NonAnimated3DGenNode implements AbstractNode {
+export class NonAnimated3DGenNode extends AbstractNode {
     private modelUri!: Uri;
     private textureUris!: Uri[];
 
