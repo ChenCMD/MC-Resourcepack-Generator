@@ -1,14 +1,8 @@
 /* eslint-disable */
 
 'use strict';
-const fs = require('fs');
 
 const path = require('path');
-
-const nodeModules = {};
-fs.readdirSync('node_modules')
-    .filter(item => ['.bin'].indexOf(item) === -1)
-    .forEach(mod => nodeModules[mod] = 'commonjs ' + mod);
 
 module.exports = {
     target: 'node',
@@ -21,7 +15,7 @@ module.exports = {
     },
     devtool: 'source-map',
     externals: {
-        ...nodeModules,
+        sharp: 'commonjs sharp',
         vscode: 'commonjs vscode'
     },
     resolve: {
