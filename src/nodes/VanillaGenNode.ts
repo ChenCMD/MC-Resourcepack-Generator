@@ -5,19 +5,19 @@ import { listenInput } from '../util/vscodeWrapper';
 import { AbstractNode } from '../types/AbstractNode';
 
 export class VanillaGenNode implements AbstractNode {
-    private texturePath!: string;
+    private parent!: string;
 
     async childQuestion(): Promise<void> {
-        await this.listenTexturePath();
-    }
-
-    private async listenTexturePath(): Promise<void> {
-        this.texturePath = await listenInput('テクスチャのパス', v => pathValidater(v, 'パスはitem/又はblock/から始まる必要があります。'));
+        this.parent = await this.listenParentPath();
     }
 
     async generate(ctx: GeneratorContext): Promise<void> {
         // モデルファイルの生成
         const path = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
-        await createModel(path, this.texturePath);
+        await createModel(path, this.parent);
+    }
+
+    async listenParentPath(): Promise<string> {
+        return await listenInput('parent', v => pathValidater(v, 'parentはitem/又はblock/から始まる必要があります。'));
     }
 }

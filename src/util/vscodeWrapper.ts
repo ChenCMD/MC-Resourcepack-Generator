@@ -1,32 +1,25 @@
-import { ProgressLocation, QuickPickItem, Uri, window, workspace } from 'vscode';
+import { InputBoxOptions, ProgressLocation, QuickPickItem, Uri, window, workspace } from 'vscode';
 import { UserCancelledError } from '../types/Error';
 import { MessageItemHasId } from '../types/MessageItemHasID';
+import { Validater } from '../types/Validater';
 
 export function getIndent(path: string): number {
     const config = workspace.getConfiguration('editor.tabSize', Uri.file(path));
     return config.get<number>('tabSize', 4);
 }
 
-export async function listenInput(
-    message: string, validateInput?: (value: string) => Thenable<string | undefined> | string | undefined
-): Promise<string> {
+export async function listenInput(message: string, validateInput?: Validater, otherOption?: InputBoxOptions): Promise<string> {
     const mes = message ? `${message}を入力` : '';
     const ans = await window.showInputBox({
         value: mes,
         placeHolder: '',
         prompt: mes,
         ignoreFocusOut: true,
-        validateInput
+        validateInput,
+        ...otherOption
     });
     if (ans === undefined) throw new UserCancelledError();
     return ans;
-}
-
-export function validater(v: string, validatePattern: RegExp, emptyMessage: string): string | undefined {
-    const invalidChar = v.match(validatePattern);
-    if (invalidChar) return `${invalidChar.join(', ')}は不明なエスケープ文字です`;
-    if (v === '') return emptyMessage;
-    return undefined;
 }
 
 export interface ListenDirOption {

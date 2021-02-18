@@ -29,15 +29,13 @@ export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, 
     writeFile(dir, JSON.stringify(model, undefined, ' '.repeat(4)));
 }
 
-export async function createModel(modelUri: Uri, texPathOrModel: string | Model): Promise<void> {
+export async function createModel(modelUri: Uri, parent: string, texture?: string): Promise<void>;
+export async function createModel(modelUri: Uri, model: Model): Promise<void>;
+export async function createModel(modelUri: Uri, parentOrModel: string | Model, texture?: string): Promise<void> {
     if (await pathAccessible(modelUri)) throw new GenerateError(`${modelUri.fsPath} はすでに生成されています。`);
-    const content = typeof texPathOrModel !== 'string' ? texPathOrModel : {
-        parent: 'item/generated',
-        textures: {
-            layer0: texPathOrModel
-        }
-    };
-    await createFile(modelUri, JSON.stringify(content, undefined, ' '.repeat(4)));
+    const model: Model = typeof parentOrModel === 'object' ? parentOrModel : { parent: parentOrModel };
+    if (texture) model.textures = { layer0: texture };
+    await createFile(modelUri, JSON.stringify(model, undefined, ' '.repeat(4)));
 }
 
 export async function applyTexture(dir: Uri, texture: Uri, animSetting?: AnimationMcmeta): Promise<void> {

@@ -1,7 +1,7 @@
 import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../types/AnimationMcmeta';
 import { GeneratorContext } from '../types/Context';
 import { createQuickPickItemHasIds } from '../types/QuickPickItemHasId';
-import { intValidater } from '../types/Validater';
+import { intValidater, pathValidater } from '../types/Validater';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
 import { Uri, workspace } from 'vscode';
@@ -10,10 +10,12 @@ import { AbstractNode } from '../types/AbstractNode';
 
 
 export class Animated2DGenNode implements AbstractNode {
+    parent!: string;
     textureUris!: Uri[];
     animSetting!: AnimationMcmeta;
 
     async childQuestion(): Promise<void> {
+        this.parent = await this.listenParentPath();
         this.textureUris = await this.listenTextureFile();
         this.animSetting = await this.listenAnimationSetting();
     }
@@ -21,7 +23,7 @@ export class Animated2DGenNode implements AbstractNode {
     async generate(ctx: GeneratorContext): Promise<void> {
         // modelファイルの出力
         const modelUri = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
-        await createModel(modelUri, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
+        await createModel(modelUri, this.parent, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
 
         // テクスチャを結合してglobalStorageに書き出し
         const base = sharp(this.textureUris[0].fsPath);
@@ -36,6 +38,10 @@ export class Animated2DGenNode implements AbstractNode {
         await applyTexture(texUri, ctx.globalStorageUri, this.animSetting);
         // 要らないファイル消す
         await workspace.fs.delete(ctx.globalStorageUri);
+    }
+
+    async listenParentPath(): Promise<string> {
+        return await listenInput('parent', v => pathValidater(v, 'parentはitem/又はblock/から始まる必要があります。'));
     }
 
     async listenTextureFile(): Promise<Uri[]> {
