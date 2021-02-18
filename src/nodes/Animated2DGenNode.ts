@@ -16,7 +16,7 @@ export class Animated2DGenNode extends AbstractNode {
 
     async childQuestion(parentElement: QuickPickItem[]): Promise<void> {
         this.parent = await this.listenParentPath(parentElement);
-        this.textureUris = await this.listenTextureFile();
+        this.textureUris = await this.listenTextureFiles();
         this.animSetting = await this.listenAnimationSetting();
     }
 
@@ -40,7 +40,7 @@ export class Animated2DGenNode extends AbstractNode {
         await workspace.fs.delete(ctx.globalStorageUri);
     }
 
-    private async listenTextureFile(): Promise<Uri[]> {
+    private async listenTextureFiles(): Promise<Uri[]> {
         const textures = await listenDir('テクスチャファイルを選択', '選択', getOption(true));
         return textures.sort((a, b) => a.fsPath > b.fsPath ? 1 : -1);
     }
