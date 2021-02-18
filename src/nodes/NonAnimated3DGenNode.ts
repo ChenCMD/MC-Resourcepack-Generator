@@ -8,8 +8,8 @@ import { readFile } from '../util/file';
 import { listenDir, getOption } from '../util/vscodeWrapper';
 
 export class NonAnimated3DGenNode implements AbstractNode {
-    modelUri!: Uri;
-    textureUris!: Uri[];
+    private modelUri!: Uri;
+    private textureUris!: Uri[];
 
     async childQuestion(): Promise<void> {
         this.modelUri = await this.listenModelFile();
@@ -36,11 +36,11 @@ export class NonAnimated3DGenNode implements AbstractNode {
         this.textureUris.forEach(async png => await applyTexture(texUri(path.basename(png.fsPath)), png));
     }
 
-    async listenModelFile(): Promise<Uri> {
+    private async listenModelFile(): Promise<Uri> {
         return await listenDir('モデルファイルを選択', '選択', getOption(false, { filter: 'model' }));
     }
 
-    async listenTextureFiles(): Promise<Uri[]> {
+    private async listenTextureFiles(): Promise<Uri[]> {
         return await listenDir('テクスチャファイルを選択', '選択', getOption(true, { defaultUri: this.modelUri }));
     }
 }

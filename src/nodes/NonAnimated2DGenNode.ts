@@ -6,8 +6,8 @@ import { AbstractNode } from '../types/AbstractNode';
 import { pathValidater } from '../types/Validater';
 
 export class NonAnimated2DGenNode implements AbstractNode {
-    parent!: string;
-    textureUri!: Uri;
+    private parent!: string;
+    private textureUri!: Uri;
 
     async childQuestion(): Promise<void> {
         this.parent = await this.listenParentPath();
@@ -24,11 +24,11 @@ export class NonAnimated2DGenNode implements AbstractNode {
         await applyTexture(texUri, this.textureUri);
     }
 
-    async listenParentPath(): Promise<string> {
+    private async listenParentPath(): Promise<string> {
         return await listenInput('parent', v => pathValidater(v, 'parentはitem/又はblock/から始まる必要があります。'));
     }
 
-    async listenTextureFile(): Promise<Uri> {
+    private async listenTextureFile(): Promise<Uri> {
         return await listenDir('テクスチャファイルを選択', '選択', getOption(false));
     }
 }

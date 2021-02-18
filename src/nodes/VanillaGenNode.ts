@@ -17,7 +17,7 @@ export class VanillaGenNode implements AbstractNode {
         await createModel(path, this.parent);
     }
 
-    async listenParentPath(): Promise<string> {
+    private async listenParentPath(): Promise<string> {
         return await listenInput('parent', v => pathValidater(v, 'parentはitem/又はblock/から始まる必要があります。'));
     }
 }

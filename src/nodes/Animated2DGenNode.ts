@@ -10,9 +10,9 @@ import { AbstractNode } from '../types/AbstractNode';
 
 
 export class Animated2DGenNode implements AbstractNode {
-    parent!: string;
-    textureUris!: Uri[];
-    animSetting!: AnimationMcmeta;
+    private parent!: string;
+    private textureUris!: Uri[];
+    private animSetting!: AnimationMcmeta;
 
     async childQuestion(): Promise<void> {
         this.parent = await this.listenParentPath();
@@ -40,16 +40,16 @@ export class Animated2DGenNode implements AbstractNode {
         await workspace.fs.delete(ctx.globalStorageUri);
     }
 
-    async listenParentPath(): Promise<string> {
+    private async listenParentPath(): Promise<string> {
         return await listenInput('parent', v => pathValidater(v, 'parentはitem/又はblock/から始まる必要があります。'));
     }
 
-    async listenTextureFile(): Promise<Uri[]> {
+    private async listenTextureFile(): Promise<Uri[]> {
         const textures = await listenDir('テクスチャファイルを選択', '選択', getOption(true));
         return textures.sort((a, b) => a.fsPath > b.fsPath ? 1 : -1);
     }
 
-    async listenAnimationSetting(): Promise<AnimationMcmeta> {
+    private async listenAnimationSetting(): Promise<AnimationMcmeta> {
         const interpolate = await listenPickItem('フレーム間補完を有効にしますか？', createQuickPickItemHasIds(getInterpolateMap()), false);
         const frametime = await listenInput('フレームの推移速度', v => intValidater(v, '有効な数値を入力してください'));
         return createAnimationMcmeta(interpolate, frametime);
