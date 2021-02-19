@@ -41,6 +41,6 @@ export class NonAnimated3DGenNode extends AbstractNode {
     }
 
     private async listenTextureFiles(): Promise<Uri[]> {
-        return await listenDir('テクスチャファイルを選択', '選択', getOption(true, { defaultUri: this.modelUri }));
+        return await listenDir('テクスチャファイルを選択', '選択', getOption(true, { defaultUri: Uri.joinPath(this.modelUri, '..') }));
     }
 }
