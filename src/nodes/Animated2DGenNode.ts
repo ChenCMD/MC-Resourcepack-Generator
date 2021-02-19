@@ -29,7 +29,7 @@ export class Animated2DGenNode extends AbstractNode {
         const base = sharp(this.textureUris[0].fsPath);
         const height = (await base.metadata()).height!;
 
-        base.extend({ top: 0, bottom: height * (this.textureUris.length - 1), left: 0, right: 0 });
+        base.extend({ top: 0, bottom: height * (this.textureUris.length - 1), left: 0, right: 0, background: '#00000000' });
         base.composite(this.textureUris.slice(1).map((tex, i) => ({ input: tex.fsPath, top: (i + 1) * height, left: 0 })));
 
         await base.png().toFile(ctx.globalStorageUri.fsPath);
