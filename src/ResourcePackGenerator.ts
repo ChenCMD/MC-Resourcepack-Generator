@@ -1,10 +1,10 @@
-import { QuickPickItem, Uri } from 'vscode';
+import { Uri } from 'vscode';
 import { AbstractNode } from './types/AbstractNode';
 import { Config } from './types/Config';
 import { GeneratorContext } from './types/Context';
 import { GenerateError } from './types/Error';
+import { createExtendQuickPickItems, ParentItem } from './types/ExtendsQuickPickItem';
 import { getGenTypeMap } from './types/GenerateType';
-import { createQuickPickItemHasNodes } from './types/QuickPickItemHasNode';
 import { intValidater, itemValidater } from './types/Validater';
 import { injectPath, isResourcepackRoot, makeUri, writeBaseModel } from './util/common';
 import { listenDir, listenInput, listenPickItem } from './util/vscodeWrapper';
@@ -17,7 +17,7 @@ export class ResourcePackGenerator {
 
     private readonly interjectFolder: string;
     private readonly version: string;
-    private readonly parentElement: QuickPickItem[];
+    private readonly parentElement: ParentItem[];
 
     constructor(config: Config, private readonly globalStorageUri: Uri) {
         this.interjectFolder = config.customizeInjectFolder;
@@ -47,8 +47,8 @@ export class ResourcePackGenerator {
     }
 
     private async listenGenType(): Promise<void> {
-        const res = await listenPickItem('生成タイプを選択してください', createQuickPickItemHasNodes(getGenTypeMap()), false);
-        this.generateNode = res.node;
+        const res = await listenPickItem('生成タイプを選択してください', createExtendQuickPickItems(getGenTypeMap()), false);
+        this.generateNode = res.extend;
     }
 
     private async listenID(): Promise<void> {

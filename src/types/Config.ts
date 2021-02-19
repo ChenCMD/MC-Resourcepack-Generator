@@ -1,9 +1,10 @@
-import { QuickPickItem, WorkspaceConfiguration } from 'vscode';
+import { WorkspaceConfiguration } from 'vscode';
+import { ParentItem } from './ExtendsQuickPickItem';
 
 export interface Config {
     customizeInjectFolder: string
     version: string
-    parentElement: QuickPickItem[]
+    parentElement: ParentItem[]
 }
 
 const defaultConfig: Config = {
@@ -12,20 +13,24 @@ const defaultConfig: Config = {
     parentElement: [
         {
             label: 'item/generated',
-            description: '通常のアイテムの持ち方'
+            description: '通常のアイテムの持ち方',
+            hasTextures: false
         },
         {
             label: 'item/handheld',
-            description: '剣の持ち方'
+            description: '剣の持ち方',
+            hasTextures: false
         },
         {
             label: 'item/handheld_rod',
             description: '人参棒の持ち方',
-            detail: '剣と比べるとテクスチャの向きが違い、一人称視点でアイテムを前方に向けた持ち方をします'
+            detail: '剣と比べるとテクスチャの向きが違い、一人称視点でアイテムを前方に向けた持ち方をします',
+            hasTextures: false
         },
         {
             label: 'item/bow',
-            description: '弓の持ち方'
+            description: '弓の持ち方',
+            hasTextures: false
         }
     ]
 };

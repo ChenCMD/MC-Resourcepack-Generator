@@ -1,5 +1,4 @@
-import { BooleanLikeString, toBoolean } from './BooleanLikeString';
-import { QuickPickItemHasId } from './QuickPickItemHasId';
+import { ExtendQuickPickItem } from './ExtendsQuickPickItem';
 
 export interface AnimationMcmeta {
     animation: {
@@ -8,20 +7,20 @@ export interface AnimationMcmeta {
     }
 }
 
-export function createAnimationMcmeta(interpolate: QuickPickItemHasId<BooleanLikeString>, frametime: string): AnimationMcmeta {
+export function createAnimationMcmeta(interpolate: ExtendQuickPickItem<boolean>, frametime: string): AnimationMcmeta {
     return {
         animation: {
-            interpolate: toBoolean(interpolate.id),
+            interpolate: interpolate.extend,
             frametime: Number.parseInt(frametime)
         }
     };
 }
 
-export function getInterpolateMap(): Map<BooleanLikeString, string> {
-    const res = new Map<BooleanLikeString, string>();
+export function getInterpolateMap(): Map<string, boolean> {
+    const res = new Map<string, boolean>();
 
-    res.set('true', 'フレーム間補完(interpolate)を有効にする');
-    res.set('false', 'フレーム間補完(interpolate)を無効にする');
+    res.set('フレーム間補完(interpolate)を有効にする', true);
+    res.set('フレーム間補完(interpolate)を無効にする', false);
 
     return res;
 }

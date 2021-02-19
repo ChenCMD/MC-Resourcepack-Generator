@@ -19,8 +19,7 @@ export class NonAnimated3DGenNode extends AbstractNode {
     async generate(ctx: GeneratorContext): Promise<void> {
         const modelPath = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
         const modelData: Model = JSON.parse(await readFile(this.modelUri));
-        const texUri = (name: string) =>
-            makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}`));
+        const texUri = (name: string) => makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}`));
 
         // modelファイルのtexture名書き換え
         for (const tex of Object.keys(modelData.textures ?? {})) {

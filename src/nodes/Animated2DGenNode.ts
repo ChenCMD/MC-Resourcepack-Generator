@@ -1,12 +1,12 @@
 import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../types/AnimationMcmeta';
 import { GeneratorContext } from '../types/Context';
-import { createQuickPickItemHasIds } from '../types/QuickPickItemHasId';
 import { intValidater } from '../types/Validater';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
-import { QuickPickItem, Uri, workspace } from 'vscode';
+import { Uri, workspace } from 'vscode';
 import sharp from 'sharp';
 import { AbstractNode } from '../types/AbstractNode';
+import { createExtendQuickPickItems, ParentItem } from '../types/ExtendsQuickPickItem';
 
 
 export class Animated2DGenNode extends AbstractNode {
@@ -14,7 +14,7 @@ export class Animated2DGenNode extends AbstractNode {
     private textureUris!: Uri[];
     private animSetting!: AnimationMcmeta;
 
-    async childQuestion(parentElement: QuickPickItem[]): Promise<void> {
+    async childQuestion(parentElement: ParentItem[]): Promise<void> {
         this.parent = await this.listenParentPath(parentElement);
         this.textureUris = await this.listenTextureFiles();
         this.animSetting = await this.listenAnimationSetting();
@@ -46,7 +46,7 @@ export class Animated2DGenNode extends AbstractNode {
     }
 
     private async listenAnimationSetting(): Promise<AnimationMcmeta> {
-        const interpolate = await listenPickItem('フレーム間補完を有効にしますか？', createQuickPickItemHasIds(getInterpolateMap()), false);
+        const interpolate = await listenPickItem('フレーム間補完を有効にしますか？', createExtendQuickPickItems(getInterpolateMap()), false);
         const frametime = await listenInput('フレームの推移速度', v => intValidater(v, '有効な数値を入力してください'));
         return createAnimationMcmeta(interpolate, frametime);
     }

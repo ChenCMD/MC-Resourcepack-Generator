@@ -1,12 +1,12 @@
 import { GeneratorContext } from '../types/Context';
 import { createModel, injectPath, makeUri } from '../util/common';
 import { AbstractNode } from '../types/AbstractNode';
-import { QuickPickItem } from 'vscode';
+import { ParentItem } from '../types/ExtendsQuickPickItem';
 
 export class VanillaGenNode extends AbstractNode {
     private parent!: string;
 
-    async childQuestion(parentElement: QuickPickItem[]): Promise<void> {
+    async childQuestion(parentElement: ParentItem[]): Promise<void> {
         this.parent = await this.listenParentPath(parentElement);
     }
 

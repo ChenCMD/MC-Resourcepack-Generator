@@ -1,8 +1,6 @@
 import { MessageItem } from 'vscode';
 
-export interface MessageItemHasId extends MessageItem {
-    id: string
-}
+export type MessageItemHasId = MessageItem & { id: string };
 
 export function createMessageItemHasIds(map: Map<string, string>): MessageItemHasId[] {
     const messages: MessageItemHasId[] = [];

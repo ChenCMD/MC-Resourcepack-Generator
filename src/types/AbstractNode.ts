@@ -1,14 +1,14 @@
 import rfdc from 'rfdc';
-import { QuickPickItem } from 'vscode';
 import { listenInput, listenPickItem } from '../util/vscodeWrapper';
 import { GeneratorContext } from './Context';
+import { ParentItem } from './ExtendsQuickPickItem';
 import { pathValidater } from './Validater';
 
 export abstract class AbstractNode {
-    abstract childQuestion(parentElement: QuickPickItem[]): Promise<void>;
+    abstract childQuestion(parentElement: ParentItem[]): Promise<void>;
     abstract generate(ctx: GeneratorContext): Promise<void>;
 
-    protected async listenParentPath(parentElement: QuickPickItem[]): Promise<string> {
+    protected async listenParentPath(parentElement: ParentItem[]): Promise<string> {
         const items = rfdc()(parentElement);
         items.push({ label: 'other', description: '手入力します' });
 
