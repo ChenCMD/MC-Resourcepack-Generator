@@ -2,10 +2,11 @@ import path from 'path';
 import { Uri } from 'vscode';
 import { AbstractNode } from '../types/AbstractNode';
 import { GeneratorContext } from '../types/Context';
+import { createExtendQuickPickItems } from '../types/ExtendsQuickPickItem';
 import { Model } from '../types/Model';
 import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { readFile } from '../util/file';
-import { listenDir, getOption } from '../util/vscodeWrapper';
+import { listenDir, getOption, listenPickItem } from '../util/vscodeWrapper';
 
 export class NonAnimated3DGenNode extends AbstractNode {
     private modelUri!: Uri;
@@ -40,6 +41,12 @@ export class NonAnimated3DGenNode extends AbstractNode {
     }
 
     private async listenTextureFiles(): Promise<Uri[]> {
+        const ansMap = new Map<string, boolean>();
+        ansMap.set('テクスチャファイルを選択する', true);
+        ansMap.set('テクスチャファイルを選択する', false);
+
+        const selectTexture = await listenPickItem('テクスチャファイルを選択しますか？', createExtendQuickPickItems(ansMap), false);
+        if (selectTexture.extend) return [];
         return await listenDir('テクスチャファイルを選択', '選択', getOption(true, { defaultUri: Uri.joinPath(this.modelUri, '..') }));
     }
 }
