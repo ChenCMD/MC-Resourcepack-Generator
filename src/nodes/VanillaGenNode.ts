@@ -7,7 +7,7 @@ export class VanillaGenNode extends AbstractNode {
     private parent!: string;
 
     async childQuestion(parentElement: ParentItem[]): Promise<void> {
-        this.parent = await this.listenParentPath(parentElement);
+        this.parent = await this.listenParentPath(parentElement, true);
     }
 
     async generate(ctx: GeneratorContext): Promise<void> {
