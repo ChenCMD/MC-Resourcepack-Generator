@@ -1,76 +1,66 @@
 import { Uri } from 'vscode';
-import { AbstractNode } from './types/AbstractNode';
 import { Config } from './types/Config';
-import { GeneratorContext } from './types/Context';
 import { GenerateError } from './types/Error';
 import { createExtendQuickPickItems } from './types/ExtendsQuickPickItem';
 import { ParentItem } from './types/ParentItem';
 import { getGenTypeMap } from './types/GenerateType';
 import { intValidater, itemValidater } from './types/Validater';
-import { injectPath, isResourcepackRoot, makeUri, writeBaseModel } from './util/common';
+import { isResourcepackRoot } from './util/common';
 import { listenDir, listenInput, listenPickItem } from './util/vscodeWrapper';
+import { GenNodes } from './nodes';
+import { GeneratorContext } from './types/Context';
 
 export class ResourcePackGenerator {
-    private generateDirectory!: Uri;
-    private generateNode!: AbstractNode;
-    private id!: number;
-    private baseItem!: string;
-
-    private readonly interjectFolder: string;
-    private readonly version: string;
-    private readonly parentElements: ParentItem[];
+    private readonly _injectFolder: string;
+    private readonly _version: string;
+    private readonly _parentElements: ParentItem[];
 
     constructor(config: Config, private readonly globalStorageUri: Uri) {
-        this.interjectFolder = config.customizeInjectFolder;
-        this.version = config.version;
-        this.parentElements = config.parentElements;
+        this._injectFolder = config.customizeInjectFolder;
+        this._version = config.version;
+        this._parentElements = config.parentElements;
     }
 
     async run(): Promise<void> {
         // 生成するディレクトリ
-        await this.listenDir();
+        const genDir = await this._listenDir();
         // 元となるアイテム
-        await this.listenBaseItem();
+        const baseItem = await this._listenBaseItem();
         // CustomModelDataのID
-        await this.listenID();
-        // 生成する種類
-        await this.listenGenType();
-        // 生成する種類について処理の分岐
-        await this.generateNode.childQuestion(this.parentElements);
-        // 生成
-        await this.generate();
-    }
-
-    private async listenDir(): Promise<void> {
-        const res = await listenDir('リソースパックフォルダを選択', '選択');
-        if (!await isResourcepackRoot(res.fsPath)) throw new GenerateError('選択したディレクトリはリソースパックフォルダじゃないよ。');
-        this.generateDirectory = res;
-    }
-
-    private async listenGenType(): Promise<void> {
-        const res = await listenPickItem('生成タイプを選択してください', createExtendQuickPickItems(getGenTypeMap()), false);
-        this.generateNode = res.extend;
-    }
-
-    private async listenID(): Promise<void> {
-        const res = await listenInput('CustomModelDataのID', v => intValidater(v, '有効な数値を入力してください'));
-        this.id = Number.parseInt(res);
-    }
-
-    private async listenBaseItem(): Promise<void> {
-        this.baseItem = await listenInput('元となるアイテムのitemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`, this.version));
-    }
-
-    private async generate(): Promise<void> {
-        const dir = makeUri(this.generateDirectory, 'models', `${this.baseItem}.json`);
-        await writeBaseModel(dir, this.baseItem, this.id, injectPath(this.interjectFolder, this.id.toString()), this.parentElements);
+        const id = await this._listenID();
         const ctx: GeneratorContext = {
-            baseItem: this.baseItem,
-            generateDirectory: this.generateDirectory,
-            id: this.id,
-            interjectFolder: this.interjectFolder,
+            parentElements: this._parentElements,
+            genDir,
+            baseItem,
+            id,
+            injectFolder: this._injectFolder,
             globalStorageUri: this.globalStorageUri
         };
-        await this.generateNode.generate(ctx);
+        // 生成する種類
+        const genNode = new (await this._listenGenType())(ctx);
+        // 生成する種類について処理の分岐
+        await genNode.childQuestion(this._parentElements);
+        // 生成
+        await genNode.generate();
+    }
+
+    private async _listenDir(): Promise<Uri> {
+        const res = await listenDir('リソースパックフォルダを選択', '選択');
+        if (!await isResourcepackRoot(res.fsPath)) throw new GenerateError('選択したディレクトリはリソースパックフォルダじゃないよ。');
+        return res;
+    }
+
+    private async _listenGenType(): Promise<GenNodes> {
+        const res = await listenPickItem('生成タイプを選択してください', createExtendQuickPickItems(getGenTypeMap()), false);
+        return res.extend;
+    }
+
+    private async _listenID(): Promise<number> {
+        const res = await listenInput('CustomModelDataのID', v => intValidater(v, '有効な数値を入力してください'));
+        return Number.parseInt(res);
+    }
+
+    private async _listenBaseItem(): Promise<string> {
+        return await listenInput('元となるアイテムのitemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`, this._version));
     }
 }

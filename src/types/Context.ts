@@ -1,9 +1,11 @@
 import { Uri } from 'vscode';
+import { ParentItem } from './ParentItem';
 
 export interface GeneratorContext {
-    generateDirectory: Uri
+    parentElements: ParentItem[]
+    genDir: Uri
     id: number
     baseItem: string
-    interjectFolder: string
+    injectFolder: string
     globalStorageUri: Uri
 }

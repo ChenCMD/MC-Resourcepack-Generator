@@ -1,7 +1,6 @@
 import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../types/AnimationMcmeta';
-import { GeneratorContext } from '../types/Context';
 import { intValidater } from '../types/Validater';
-import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
+import { applyTexture, createModel } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
 import { Uri, workspace } from 'vscode';
 import sharp from 'sharp';
@@ -11,34 +10,33 @@ import { ParentItem } from '../types/ParentItem';
 
 
 export class Animated2DGenNode extends AbstractNode {
-    private parent!: string;
-    private textureUris!: Uri[];
-    private animSetting!: AnimationMcmeta;
+    private _parent!: string;
+    private _textureUris!: Uri[];
+    private _animSetting!: AnimationMcmeta;
 
     async childQuestion(parentElement: ParentItem[]): Promise<void> {
-        this.parent = await this.listenParentPath(parentElement);
-        this.textureUris = await this.listenTextureFiles();
-        this.animSetting = await this.listenAnimationSetting();
+        this._parent = await this.listenParentPath(parentElement);
+        this._textureUris = await this.listenTextureFiles();
+        this._animSetting = await this.listenAnimationSetting();
     }
 
-    async generate(ctx: GeneratorContext): Promise<void> {
+    async generate(): Promise<void> {
+        super.generate();
         // modelファイルの出力
-        const modelUri = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
-        await createModel(modelUri, this.parent, `item/${injectPath(ctx.interjectFolder, ctx.id.toString())}`);
+        await createModel(this.getChildModelUri(), this._parent, this.getTexturePath());
 
         // テクスチャを結合してglobalStorageに書き出し
-        const base = sharp(this.textureUris[0].fsPath);
+        const base = sharp(this._textureUris[0].fsPath);
         const height = (await base.metadata()).height!;
 
-        base.extend({ top: 0, bottom: height * (this.textureUris.length - 1), left: 0, right: 0, background: '#00000000' });
-        base.composite(this.textureUris.slice(1).map((tex, i) => ({ input: tex.fsPath, top: (i + 1) * height, left: 0 })));
+        base.extend({ top: 0, bottom: height * (this._textureUris.length - 1), left: 0, right: 0, background: '#00000000' });
+        base.composite(this._textureUris.slice(1).map((tex, i) => ({ input: tex.fsPath, top: (i + 1) * height, left: 0 })));
 
-        await base.png().toFile(ctx.globalStorageUri.fsPath);
+        await base.png().toFile(this.globalStorageUri.fsPath);
         // textureファイルの出力
-        const texUri = makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}.png`));
-        await applyTexture(texUri, ctx.globalStorageUri, this.animSetting);
+        await applyTexture(this.getTextureUri(), this.globalStorageUri, this._animSetting);
         // 要らないファイル消す
-        await workspace.fs.delete(ctx.globalStorageUri);
+        await workspace.fs.delete(this.globalStorageUri);
     }
 
     private async listenTextureFiles(): Promise<Uri[]> {

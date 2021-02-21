@@ -1,39 +1,37 @@
 import path from 'path';
 import { Uri } from 'vscode';
 import { AbstractNode } from '../types/AbstractNode';
-import { GeneratorContext } from '../types/Context';
 import { createExtendQuickPickItems } from '../types/ExtendsQuickPickItem';
 import { Model } from '../types/Model';
-import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
+import { applyTexture, createModel } from '../util/common';
 import { readFile } from '../util/file';
 import { listenDir, getOption, listenPickItem } from '../util/vscodeWrapper';
 
 export class NonAnimated3DGenNode extends AbstractNode {
-    private modelUri!: Uri;
-    private textureUris!: Uri[];
+    private _modelUri!: Uri;
+    private _textureUris!: Uri[];
 
     async childQuestion(): Promise<void> {
-        this.modelUri = await this.listenModelFile();
-        this.textureUris = await this.listenTextureFiles();
+        this._modelUri = await this.listenModelFile();
+        this._textureUris = await this.listenTextureFiles();
     }
 
-    async generate(ctx: GeneratorContext): Promise<void> {
-        const modelPath = makeUri(ctx.generateDirectory, 'models', injectPath(ctx.interjectFolder, `${ctx.id}.json`));
-        const modelData: Model = JSON.parse(await readFile(this.modelUri));
-        const texUri = (name: string) => makeUri(ctx.generateDirectory, 'textures', injectPath(ctx.interjectFolder, `${ctx.id}/${name}`));
+    async generate(): Promise<void> {
+        super.generate();
+        const modelData: Model = JSON.parse(await readFile(this._modelUri));
 
         // modelファイルのtexture名書き換え
         for (const tex of Object.keys(modelData.textures ?? {})) {
-            const lastStr = modelData.textures![tex].split(/(\/|\\)/).pop();
+            const lastStr = modelData.textures![tex].split('/').pop();
 
-            if (this.textureUris.some(png => path.basename(png.fsPath, '.png') === lastStr))
-                modelData.textures![tex] = `item/${injectPath(ctx.interjectFolder, `${ctx.id}/${lastStr}`)}`;
+            if (this._textureUris.some(png => path.basename(png.fsPath, '.png') === lastStr))
+                modelData.textures![tex] = this.getTexturePath(lastStr);
         }
 
         // modelファイルの出力
-        await createModel(modelPath, modelData);
+        await createModel(this.getChildModelUri(), modelData);
         // textureファイル
-        this.textureUris.forEach(async png => await applyTexture(texUri(path.basename(png.fsPath)), png));
+        this._textureUris.forEach(async png => await applyTexture(this.getTextureUri(path.basename(png.fsPath)), png));
     }
 
     private async listenModelFile(): Promise<Uri> {
@@ -47,6 +45,6 @@ export class NonAnimated3DGenNode extends AbstractNode {
 
         const selectTexture = await listenPickItem('テクスチャファイルを選択しますか？', createExtendQuickPickItems(ansMap), false);
         if (selectTexture.extend) return [];
-        return await listenDir('テクスチャファイルを選択', '選択', getOption(true, { defaultUri: Uri.joinPath(this.modelUri, '..') }));
+        return await listenDir('テクスチャファイルを選択', '選択', getOption(true, { defaultUri: Uri.joinPath(this._modelUri, '..') }));
     }
 }
