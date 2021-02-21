@@ -44,7 +44,7 @@ export class NonAnimated3DGenNode extends AbstractNode {
         ansMap.set('テクスチャファイルを選択しない', false);
 
         const selectTexture = await listenPickItem('テクスチャファイルを選択しますか？', createExtendQuickPickItems(ansMap), false);
-        if (selectTexture.extend) return [];
+        if (!selectTexture.extend) return [];
         return await listenDir('テクスチャファイルを選択', '選択', getOption(true, { defaultUri: Uri.joinPath(this._modelUri, '..') }));
     }
 }
