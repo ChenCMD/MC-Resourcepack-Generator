@@ -37,12 +37,21 @@
 			"properties": {
 				"mcrg.customizeInjectFolder": {
 					"type": "string",
-					"pattern": "^[^\\\\:*?\"<>|]*$",
-					"description": "テクスチャやmodelファイルを配置するフォルダ"
+					"pattern": "^[a-z0-9/._-]*$",
+					"patternErrorMessage": "使用できない文字が含まれています。",
+					"description": "テクスチャやmodelファイルを配置するフォルダ",
+					"default": ""
+				},
+				"mcrg.textureFileName": {
+					"type": "string",
+					"pattern": "^[a-z0-9/._-]*(?:(?:\\{custom_model_data\\})?[a-z0-9/._-]*(?:\\{item\\})?|(?:\\{item\\})?[a-z0-9/._-]*(?:\\{custom_model_data\\})?)[a-z0-9/._-]*$",
+					"patternErrorMessage": "使用できない文字が含まれているか、'{custom_model_data}'が含まれてません。",
+					"description": "MCRGが配置するテクスチャの名前\n衝突防止のため、'{custom_model_data}'は必ず含める必要があります\n\t - '{item}'は生成時に記入する元となるアイテムのItemIDに置換されます。\n\t - '{custom_model_data}'は生成時に記入するCustomModelDataのIDに置換されます。",
+					"default": "{item}/{custom_model_data}"
 				},
 				"mcrg.version": {
 					"type": "string",
-					"markdownDescription": "データのバージョン 19w40aの後にリリースされた[version manifest](https://launchermeta.mojang.com/mc/game/version_manifest.json)のIDである必要があります。 `1.16.5`はデータベースの都合上存在しないので`1.16.4`を指定してください。",
+					"markdownDescription": "データのバージョン 19w40aの後にリリースされた[version manifest](https://launchermeta.mojang.com/mc/game/version_manifest.json)のIDである必要があります。 `1.16.5`はデータベースの都合上存在しない、、`1.16.4`を指定してください。",
 					"default": "1.16.4"
 				},
 				"mcrg.parentElements": {

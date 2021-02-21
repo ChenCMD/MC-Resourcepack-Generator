@@ -7,4 +7,5 @@ export interface GeneratorContext {
     id: number
     baseItem: string
     injectFolder: string
+    textureFileName: string
 }

@@ -9,6 +9,7 @@ export abstract class AbstractNode {
     private readonly _baseItem: string;
     private readonly _id: number;
     private readonly _injectFolder: string;
+    private _textureFileName: string;
 
     constructor(ctx: GeneratorContext) {
         this._parentElements = ctx.parentElements;
@@ -16,6 +17,7 @@ export abstract class AbstractNode {
         this._baseItem = ctx.baseItem;
         this._injectFolder = ctx.injectFolder;
         this._id = ctx.id;
+        this._textureFileName = ctx.textureFileName;
     }
 
     abstract childQuestion(parentElements: ParentItem[]): Promise<void>;
@@ -30,19 +32,26 @@ export abstract class AbstractNode {
     }
 
     protected getTexturePath(customFileName?: string): string {
-        return `item/${this._injectPath(customFileName ? `${this._id}/${customFileName}` : `${this._id}`)}`;
+        return `item/${this._getTextureFilePath(customFileName)}`;
     }
 
     protected getTextureUri(customFileName?: string): Uri {
-        return this._makeUri('textures', this._injectPath(customFileName ? `${this._id}/${customFileName}` : `${this._id}.png`));
+        return this._makeUri('textures', `${this._getTextureFilePath(customFileName)}.png`);
     }
 
     protected getChildModelUri(): Uri {
         return this._makeUri('models', this._injectPath(`${this._id}.json`));
     }
 
+    private _getTextureFilePath(customFileName?: string): string {
+        const name = this._textureFileName
+            .replace('{item}', this._baseItem)
+            .replace('{custom_model_data}', `${this._id}`);
+        return this._injectPath(customFileName ? `${name}/${customFileName}` : name);
+    }
+
     private _injectPath(afterPath: string): string {
-        return this._injectFolder ? `${this._injectFolder}/${afterPath.toString()}` : afterPath.toString();
+        return this._injectFolder ? `${this._injectFolder}/${afterPath}` : afterPath;
     }
 
     private _makeUri(category: string, ...itemAfter: string[]): Uri {

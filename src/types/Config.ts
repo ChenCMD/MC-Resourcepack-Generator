@@ -5,6 +5,7 @@ export interface Config {
     customizeInjectFolder: string
     version: string
     parentElements: ParentItem[]
+    textureFileName: string
 }
 
 const defaultConfig: Config = {
@@ -32,7 +33,8 @@ const defaultConfig: Config = {
             description: '弓の持ち方',
             hasTextures: false
         }
-    ]
+    ],
+    textureFileName: '{item}/{custom_model_data}'
 };
 
 export function constructConfig(custom: WorkspaceConfiguration, base = defaultConfig): Config {

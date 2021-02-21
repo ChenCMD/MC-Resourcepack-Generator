@@ -14,11 +14,13 @@ export class ResourcePackGenerator {
     private readonly _injectFolder: string;
     private readonly _version: string;
     private readonly _parentElements: ParentItem[];
+    private _textureFileName: string;
 
     constructor(config: Config) {
         this._injectFolder = config.customizeInjectFolder;
         this._version = config.version;
         this._parentElements = config.parentElements;
+        this._textureFileName = config.textureFileName;
     }
 
     async run(): Promise<void> {
@@ -33,7 +35,8 @@ export class ResourcePackGenerator {
             genDir,
             baseItem,
             id,
-            injectFolder: this._injectFolder
+            injectFolder: this._injectFolder,
+            textureFileName: this._textureFileName
         };
         // 生成する種類
         const genNode = new (await this._listenGenType())(ctx);
@@ -60,6 +63,6 @@ export class ResourcePackGenerator {
     }
 
     private async _listenBaseItem(): Promise<string> {
-        return await listenInput('元となるアイテムのitemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`, this._version));
+        return await listenInput('元となるアイテムのItemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`, this._version));
     }
 }
