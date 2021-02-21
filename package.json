@@ -140,7 +140,7 @@
 		"webpack-cli": "^4.5.0"
 	},
 	"dependencies": {
-		"rfdc": "^1.2.0",
-		"sharp": "^0.27.1"
+		"jimp": "^0.16.1",
+		"rfdc": "^1.2.0"
 	}
 }

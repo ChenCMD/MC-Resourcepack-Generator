@@ -3,10 +3,10 @@ import { intValidater } from '../types/Validater';
 import { applyTexture, createModel } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
 import { Uri } from 'vscode';
-import sharp from 'sharp';
 import { AbstractNode } from '../types/AbstractNode';
 import { createExtendQuickPickItems } from '../types/ExtendsQuickPickItem';
 import { ParentItem } from '../types/ParentItem';
+import Jimp from 'jimp';
 
 
 export class Animated2DGenNode extends AbstractNode {
@@ -26,12 +26,11 @@ export class Animated2DGenNode extends AbstractNode {
         await createModel(this.getChildModelUri(), this._parent, this.getTexturePath());
 
         // テクスチャを結合してglobalStorageに書き出し
-        const image = sharp(this._textureUris[0].fsPath);
-        const height = (await image.metadata()).height!;
+        const image = await Jimp.read(this._textureUris[0].fsPath);
+        const height = image.getHeight();
 
-        image.extend({ top: 0, bottom: height * (this._textureUris.length - 1), left: 0, right: 0, background: '#00000000' });
-        image.composite(this._textureUris.slice(1).map((tex, i) => ({ input: tex.fsPath, top: (i + 1) * height, left: 0 })));
-        image.png();
+        image.contain(image.getWidth(), height * this._textureUris.length, Jimp.VERTICAL_ALIGN_TOP);
+        for (const [i, tex] of this._textureUris.slice(1).entries()) image.composite(await Jimp.read(tex.fsPath), 0, (i + 1) * height);
         // textureファイルの出力
         await applyTexture(this.getTextureUri(), image, this._animSetting);
     }

@@ -15,7 +15,6 @@ module.exports = {
     },
     devtool: 'source-map',
     externals: {
-        sharp: 'commonjs sharp',
         vscode: 'commonjs vscode'
     },
     resolve: {
