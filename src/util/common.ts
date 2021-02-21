@@ -3,6 +3,7 @@ import path from 'path';
 import { Uri } from 'vscode';
 import { AnimationMcmeta } from '../types/AnimationMcmeta';
 import { DownloadTimeOutError, GenerateError } from '../types/Error';
+import { ParentItem } from '../types/ParentItem';
 import { createModelTemplate, Model } from '../types/Model';
 import { copyFile, createFile, pathAccessible, readFile, writeFile } from './file';
 
@@ -22,11 +23,25 @@ export function makeUri(generateDirectory: Uri, category: string, ...itemAfter: 
 export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, texPath: string, parentElements: ParentItem[]): Promise<void> {
     const model: Model = await pathAccessible(dir) ? JSON.parse(await readFile(dir)) : await createModelTemplate(baseItem, parentElements);
     if (!model.overrides) model.overrides = [];
-    model.overrides.forEach(v => {
-        if (!v.predicate) return;
-        if (v.predicate.custom_model_data === cmdID) v.model = `item/${texPath}`;
+    const isAlreadyExists = model.overrides.some(v => {
+        if (!v.predicate || v.predicate.custom_model_data !== cmdID) return false;
+        v.model = `item/${texPath}`;
+        return true;
     });
-    writeFile(dir, JSON.stringify(model, undefined, ' '.repeat(4)));
+    if (!isAlreadyExists) {
+        let index = 0;
+        let indexCMD = 0;
+        model.overrides.forEach((v, i) => {
+            const cmd = v.predicate?.custom_model_data ?? 0;
+            if (indexCMD < cmd && cmd < cmdID) {
+                index = i + 1;
+                indexCMD = cmd;
+            }
+        });
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        model.overrides.splice(index, 0, { predicate: { custom_model_data: cmdID }, model: `item/${texPath}` });
+    }
+    await writeFile(dir, JSON.stringify(model, undefined, ' '.repeat(4)));
 }
 
 export async function createModel(modelUri: Uri, parent: string, texture?: string): Promise<void>;
