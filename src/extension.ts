@@ -29,7 +29,7 @@ async function run() {
     } catch (e) {
         if (e instanceof UserCancelledError) return;
         if (e instanceof Error) showError(e.message);
-        else showError(e.toString());
+        else showError(`予期しないエラーがが発生しました。以下の内容を作者に教えていただけると解決できる場合があります。\n${e.toString()}`);
         codeConsole.appendLine(e.stack ?? e.toString());
     }
 }
