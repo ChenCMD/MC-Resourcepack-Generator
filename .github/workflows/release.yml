@@ -6,7 +6,7 @@ on:
 env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
   GIT_AUTHOR_EMAIL: ${{ secrets.GIT_AUTHOR_EMAIL }}
-  GIT_AUTHOR_NAME: ${{ secrets.GIT_AUTHOR_NAME }}
+  GIT_AUTHOR_NAME: ChenCMD
   VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
 jobs:
   release:
@@ -21,6 +21,5 @@ jobs:
 
       - name: Release
         run: |
-          rm -rf dist
           npm run build
           npm run release
