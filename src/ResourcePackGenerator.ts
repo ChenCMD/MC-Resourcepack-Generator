@@ -63,7 +63,7 @@ export class ResourcePackGenerator {
 
     private async generate(): Promise<void> {
         const dir = makeUri(this.generateDirectory, 'models', `${this.baseItem}.json`);
-        await writeBaseModel(dir, this.baseItem, this.id, injectPath(this.interjectFolder, this.id.toString()));
+        await writeBaseModel(dir, this.baseItem, this.id, injectPath(this.interjectFolder, this.id.toString()), this.parentElements);
         const ctx: GeneratorContext = {
             baseItem: this.baseItem,
             generateDirectory: this.generateDirectory,

@@ -1,3 +1,5 @@
+import { ParentItem, listenParentPath } from './ParentItem';
+
 /* eslint-disable @typescript-eslint/naming-convention */
 export interface Model {
     parent: string,
@@ -12,21 +14,13 @@ export interface Model {
     } & { [key: string]: string }
 }
 
-export function createModelTemplate(item: string): Model {
+export async function createModelTemplate(item: string, parentElements: ParentItem[]): Promise<Model> {
     const modelTemplate: Model = {
-        parent: 'item/handheld_rod',
+        parent: await listenParentPath(parentElements, 'ベースのmodelファイルのparent', true),
         textures: {
             layer0: `item/${item}`
         },
         overrides: []
     };
-    for (let i = 1; i <= 500; i++) {
-        modelTemplate.overrides!.push({
-            predicate: {
-                custom_model_data: i
-            },
-            model: `item/${item}`
-        });
-    }
     return modelTemplate;
 }

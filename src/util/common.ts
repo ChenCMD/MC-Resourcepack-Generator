@@ -19,8 +19,8 @@ export function makeUri(generateDirectory: Uri, category: string, ...itemAfter: 
     return Uri.joinPath(generateDirectory, 'assets/minecraft', category, 'item', ...itemAfter);
 }
 
-export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, texPath: string): Promise<void> {
-    const model: Model = await pathAccessible(dir) ? JSON.parse(await readFile(dir)) : createModelTemplate(baseItem);
+export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, texPath: string, parentElements: ParentItem[]): Promise<void> {
+    const model: Model = await pathAccessible(dir) ? JSON.parse(await readFile(dir)) : await createModelTemplate(baseItem, parentElements);
     if (!model.overrides) model.overrides = [];
     model.overrides.forEach(v => {
         if (!v.predicate) return;
