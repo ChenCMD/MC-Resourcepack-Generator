@@ -6,7 +6,8 @@ import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscod
 import { Uri, workspace } from 'vscode';
 import sharp from 'sharp';
 import { AbstractNode } from '../types/AbstractNode';
-import { createExtendQuickPickItems, ParentItem } from '../types/ExtendsQuickPickItem';
+import { createExtendQuickPickItems } from '../types/ExtendsQuickPickItem';
+import { ParentItem } from '../types/ParentItem';
 
 
 export class Animated2DGenNode extends AbstractNode {

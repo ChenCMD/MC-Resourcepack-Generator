@@ -3,7 +3,7 @@ import { applyTexture, createModel, injectPath, makeUri } from '../util/common';
 import { Uri } from 'vscode';
 import { listenDir, getOption } from '../util/vscodeWrapper';
 import { AbstractNode } from '../types/AbstractNode';
-import { ParentItem } from '../types/ExtendsQuickPickItem';
+import { ParentItem } from '../types/ParentItem';
 
 export class NonAnimated2DGenNode extends AbstractNode {
     private parent!: string;

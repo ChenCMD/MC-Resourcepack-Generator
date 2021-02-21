@@ -1,7 +1,7 @@
 import { GeneratorContext } from '../types/Context';
 import { createModel, injectPath, makeUri } from '../util/common';
 import { AbstractNode } from '../types/AbstractNode';
-import { ParentItem } from '../types/ExtendsQuickPickItem';
+import { ParentItem } from '../types/ParentItem';
 
 export class VanillaGenNode extends AbstractNode {
     private parent!: string;

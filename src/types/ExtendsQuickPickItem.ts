@@ -7,5 +7,3 @@ export function createExtendQuickPickItems<T>(map: Map<string, T>): ExtendQuickP
     for (const label of map.keys()) messages.push({ label, extend: map.get(label)! });
     return messages;
 }
-
-export type ParentItem = (QuickPickItem & { hasTextures?: boolean });

@@ -1,16 +1,16 @@
 import { WorkspaceConfiguration } from 'vscode';
-import { ParentItem } from './ExtendsQuickPickItem';
+import { ParentItem } from './ParentItem';
 
 export interface Config {
     customizeInjectFolder: string
     version: string
-    parentElement: ParentItem[]
+    parentElements: ParentItem[]
 }
 
 const defaultConfig: Config = {
     customizeInjectFolder: '',
     version: '1.16.4', // ベータベースに1.16.5のデータが存在しないので1.16.4を使用する
-    parentElement: [
+    parentElements: [
         {
             label: 'item/generated',
             description: '通常のアイテムの持ち方',
