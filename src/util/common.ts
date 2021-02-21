@@ -5,7 +5,7 @@ import { AnimationMcmeta } from '../types/AnimationMcmeta';
 import { DownloadTimeOutError, GenerateError } from '../types/Error';
 import { ParentItem } from '../types/ParentItem';
 import { createModelTemplate, Model } from '../types/Model';
-import { copyFile, createFile, pathAccessible, readFile, writeFile } from './file';
+import { copyFile, createDir, createFile, pathAccessible, readFile, writeFile } from './file';
 import sharp from 'sharp';
 
 export async function isResourcepackRoot(testPath: string): Promise<boolean> {
@@ -48,6 +48,7 @@ export async function createModel(modelUri: Uri, parentOrModel: string | Model, 
 export async function applyTexture(dir: Uri, image: sharp.Sharp, animSetting?: AnimationMcmeta): Promise<void>;
 export async function applyTexture(dir: Uri, texture: Uri, animSetting?: AnimationMcmeta): Promise<void>;
 export async function applyTexture(dir: Uri, texture: Uri | sharp.Sharp, animSetting?: AnimationMcmeta): Promise<void> {
+    await createDir(path.dirname(dir.fsPath));
     if (texture instanceof Uri)
         await copyFile(texture, dir);
     else

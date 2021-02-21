@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import fs, { promises as fsp } from 'fs';
 import { TextEncoder } from 'util';
 import { FileSystemError, Uri, workspace } from 'vscode';
 
@@ -27,7 +27,7 @@ export async function createFile(filePath: string | Uri, content: string | strin
 }
 
 export async function createDir(dirPath: string | Uri): Promise<void> {
-    await workspace.fs.createDirectory(flatPath(dirPath),);
+    await workspace.fs.createDirectory(flatPath(dirPath));
 }
 
 /**
@@ -55,7 +55,7 @@ export async function createDir(dirPath: string | Uri): Promise<void> {
  * SOFTWARE.
  */
 export async function pathAccessible(testPath: string | Uri): Promise<boolean> {
-    return await fs.promises.access(flatPath(testPath).fsPath)
+    return await fsp.access(flatPath(testPath).fsPath)
         .then(() => true)
         .catch(() => false);
 }
