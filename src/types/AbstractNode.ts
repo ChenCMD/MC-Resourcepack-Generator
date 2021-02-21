@@ -9,7 +9,6 @@ export abstract class AbstractNode {
     private readonly _baseItem: string;
     private readonly _id: number;
     private readonly _injectFolder: string;
-    private readonly _globalStorageUri: Uri;
 
     constructor(ctx: GeneratorContext) {
         this._parentElements = ctx.parentElements;
@@ -17,7 +16,6 @@ export abstract class AbstractNode {
         this._baseItem = ctx.baseItem;
         this._injectFolder = ctx.injectFolder;
         this._id = ctx.id;
-        this._globalStorageUri = ctx.globalStorageUri;
     }
 
     abstract childQuestion(parentElements: ParentItem[]): Promise<void>;
@@ -25,10 +23,6 @@ export abstract class AbstractNode {
     async generate(): Promise<void> {
         const dir = this._makeUri('models', `${this._baseItem}.json`);
         await writeBaseModel(dir, this._baseItem, this._id, this._injectPath(this._id.toString()), this._parentElements);
-    }
-
-    get globalStorageUri(): Uri {
-        return this._globalStorageUri;
     }
 
     protected async listenParentPath(parentElements: ParentItem[], withoutNonHasTextures?: boolean): Promise<string> {

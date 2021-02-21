@@ -6,6 +6,7 @@ import { DownloadTimeOutError, GenerateError } from '../types/Error';
 import { ParentItem } from '../types/ParentItem';
 import { createModelTemplate, Model } from '../types/Model';
 import { copyFile, createFile, pathAccessible, readFile, writeFile } from './file';
+import sharp from 'sharp';
 
 export async function isResourcepackRoot(testPath: string): Promise<boolean> {
     return await pathAccessible(path.join(testPath, 'pack.mcmeta')) && await pathAccessible(path.join(testPath, 'assets'));
@@ -44,8 +45,14 @@ export async function createModel(modelUri: Uri, parentOrModel: string | Model, 
     await createFile(modelUri, JSON.stringify(model, undefined, ' '.repeat(4)));
 }
 
-export async function applyTexture(dir: Uri, texture: Uri, animSetting?: AnimationMcmeta): Promise<void> {
-    await copyFile(texture, dir);
+export async function applyTexture(dir: Uri, image: sharp.Sharp, animSetting?: AnimationMcmeta): Promise<void>;
+export async function applyTexture(dir: Uri, texture: Uri, animSetting?: AnimationMcmeta): Promise<void>;
+export async function applyTexture(dir: Uri, texture: Uri | sharp.Sharp, animSetting?: AnimationMcmeta): Promise<void> {
+    if (texture instanceof Uri)
+        await copyFile(texture, dir);
+    else
+        await texture.toFile(dir.fsPath);
+
     if (animSetting)
         await createFile(Uri.file(path.join(`${dir.fsPath}.mcmeta`)), JSON.stringify(animSetting));
 }

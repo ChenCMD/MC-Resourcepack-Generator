@@ -15,7 +15,7 @@ export class ResourcePackGenerator {
     private readonly _version: string;
     private readonly _parentElements: ParentItem[];
 
-    constructor(config: Config, private readonly globalStorageUri: Uri) {
+    constructor(config: Config) {
         this._injectFolder = config.customizeInjectFolder;
         this._version = config.version;
         this._parentElements = config.parentElements;
@@ -33,8 +33,7 @@ export class ResourcePackGenerator {
             genDir,
             baseItem,
             id,
-            injectFolder: this._injectFolder,
-            globalStorageUri: this.globalStorageUri
+            injectFolder: this._injectFolder
         };
         // 生成する種類
         const genNode = new (await this._listenGenType())(ctx);

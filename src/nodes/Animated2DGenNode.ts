@@ -2,7 +2,7 @@ import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../ty
 import { intValidater } from '../types/Validater';
 import { applyTexture, createModel } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
-import { Uri, workspace } from 'vscode';
+import { Uri } from 'vscode';
 import sharp from 'sharp';
 import { AbstractNode } from '../types/AbstractNode';
 import { createExtendQuickPickItems } from '../types/ExtendsQuickPickItem';
@@ -26,17 +26,14 @@ export class Animated2DGenNode extends AbstractNode {
         await createModel(this.getChildModelUri(), this._parent, this.getTexturePath());
 
         // テクスチャを結合してglobalStorageに書き出し
-        const base = sharp(this._textureUris[0].fsPath);
-        const height = (await base.metadata()).height!;
+        const image = sharp(this._textureUris[0].fsPath);
+        const height = (await image.metadata()).height!;
 
-        base.extend({ top: 0, bottom: height * (this._textureUris.length - 1), left: 0, right: 0, background: '#00000000' });
-        base.composite(this._textureUris.slice(1).map((tex, i) => ({ input: tex.fsPath, top: (i + 1) * height, left: 0 })));
-
-        await base.png().toFile(this.globalStorageUri.fsPath);
+        image.extend({ top: 0, bottom: height * (this._textureUris.length - 1), left: 0, right: 0, background: '#00000000' });
+        image.composite(this._textureUris.slice(1).map((tex, i) => ({ input: tex.fsPath, top: (i + 1) * height, left: 0 })));
+        image.png();
         // textureファイルの出力
-        await applyTexture(this.getTextureUri(), this.globalStorageUri, this._animSetting);
-        // 要らないファイル消す
-        await workspace.fs.delete(this.globalStorageUri);
+        await applyTexture(this.getTextureUri(), image, this._animSetting);
     }
 
     private async listenTextureFiles(): Promise<Uri[]> {
