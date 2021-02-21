@@ -41,7 +41,7 @@ export class NonAnimated3DGenNode extends AbstractNode {
     private async listenTextureFiles(): Promise<Uri[]> {
         const ansMap = new Map<string, boolean>();
         ansMap.set('テクスチャファイルを選択する', true);
-        ansMap.set('テクスチャファイルを選択する', false);
+        ansMap.set('テクスチャファイルを選択しない', false);
 
         const selectTexture = await listenPickItem('テクスチャファイルを選択しますか？', createExtendQuickPickItems(ansMap), false);
         if (selectTexture.extend) return [];
