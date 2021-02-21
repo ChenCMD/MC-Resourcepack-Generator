@@ -39,6 +39,63 @@
 					"type": "string",
 					"pattern": "^[^\\\\:*?\"<>|]*$",
 					"description": "テクスチャやmodelファイルを配置するフォルダ"
+				},
+				"mcrg.version": {
+					"type": "string",
+					"markdownDescription": "データのバージョン 19w40aの後にリリースされた[version manifest](https://launchermeta.mojang.com/mc/game/version_manifest.json)のIDである必要があります。 `1.16.5`はデータベースの都合上存在しないので`1.16.4`を指定してください。",
+					"default": "1.16.4"
+				},
+				"mcrg.parentElements": {
+					"type": "array",
+					"markdownDescription": "parentの選択時に表示される項目",
+					"items": {
+						"type": "object",
+						"properties": {
+							"label": {
+								"type": "string",
+								"description": "目立つように表示される人間が読める文字列"
+							},
+							"description": {
+								"type": "string",
+								"description": "同じ行で目立たないように表示される人間が読める文字列"
+							},
+							"detail": {
+								"type": "string",
+								"description": "別の行で目立たないように表示される人間が読める文字列"
+							},
+							"hasTextures": {
+								"type": "boolean",
+								"description": "そのparentがテクスチャを持っているか否か falseの場合、バニラテクスチャのparent選択時に表示されなくなります",
+								"default": true
+							}
+						},
+						"required": [
+							"label"
+						]
+					},
+					"default": [
+						{
+							"label": "item/generated",
+							"description": "通常のアイテムの持ち方",
+							"hasTextures": false
+						},
+						{
+							"label": "item/handheld",
+							"description": "剣の持ち方",
+							"hasTextures": false
+						},
+						{
+							"label": "item/handheld_rod",
+							"description": "人参棒の持ち方",
+							"detail": "剣と比べるとテクスチャの向きが違い、一人称視点でアイテムを前方に向けた持ち方をします",
+							"hasTextures": false
+						},
+						{
+							"label": "item/bow",
+							"description": "弓の持ち方",
+							"hasTextures": false
+						}
+					]
 				}
 			}
 		}
@@ -56,6 +113,7 @@
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.0",
 		"@types/node": "^14.0.27",
+		"@types/rfdc": "^1.1.0",
 		"@types/sharp": "^0.27.1",
 		"@types/vscode": "^1.52.0",
 		"@typescript-eslint/eslint-plugin": "^3.8.0",
@@ -73,6 +131,7 @@
 		"webpack-cli": "^4.2.0"
 	},
 	"dependencies": {
+		"rfdc": "^1.2.0",
 		"sharp": "^0.27.0"
 	}
 }
