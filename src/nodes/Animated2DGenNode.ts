@@ -21,7 +21,7 @@ export class Animated2DGenNode extends AbstractNode {
     }
 
     async generate(): Promise<void> {
-        super.generate();
+        await super.generate();
         // modelファイルの出力
         await createModel(this.getChildModelUri(), this._parent, this.getTexturePath());
 

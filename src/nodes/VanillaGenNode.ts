@@ -10,7 +10,7 @@ export class VanillaGenNode extends AbstractNode {
     }
 
     async generate(): Promise<void> {
-        super.generate();
+        await super.generate();
         // モデルファイルの生成
         await createModel(this.getChildModelUri(), this._parent);
     }

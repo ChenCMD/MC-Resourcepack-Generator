@@ -17,7 +17,7 @@ export class NonAnimated3DGenNode extends AbstractNode {
     }
 
     async generate(): Promise<void> {
-        super.generate();
+        await super.generate();
         const modelData: Model = JSON.parse(await readFile(this._modelUri));
 
         // modelファイルのtexture名書き換え
