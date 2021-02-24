@@ -13,27 +13,32 @@ export async function isResourcepackRoot(testPath: string): Promise<boolean> {
 }
 
 export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, texPath: string, parentElements: ParentItem[]): Promise<void> {
-    const model: Model = await pathAccessible(dir) ? JSON.parse(await readFile(dir)) : await createModelTemplate(baseItem, parentElements);
-    if (!model.overrides) model.overrides = [];
-    const isAlreadyExists = model.overrides.some(v => {
-        if (!v.predicate || v.predicate.custom_model_data !== cmdID) return false;
-        v.model = `item/${texPath}`;
-        return true;
-    });
-    if (!isAlreadyExists) {
-        let index = 0;
-        let indexCMD = 0;
-        model.overrides.forEach((v, i) => {
-            const cmd = v.predicate?.custom_model_data ?? 0;
-            if (indexCMD < cmd && cmd < cmdID) {
-                index = i + 1;
-                indexCMD = cmd;
+    const baseModel: Model = await pathAccessible(dir) ? JSON.parse(await readFile(dir)) : await createModelTemplate(baseItem, parentElements);
+
+    const setOverride = (cmdID2: number, model: string, replace = true) => {
+        let index;
+        if (!baseModel.overrides) baseModel.overrides = [];
+        for (const [i, v] of baseModel.overrides.entries()) {
+            if (!v.predicate || v.predicate.custom_model_data !== cmdID2) continue;
+            index = replace ? i : -1;
+            break;
+        }
+        if (index === undefined) {
+            index = 0;
+            let indexCMD = 0;
+            for (const [i, v] of baseModel.overrides.entries()) {
+                const cmd = v.predicate?.custom_model_data ?? 0;
+                if (indexCMD < cmd && cmd < cmdID2) index = i + 1, indexCMD = cmd;
             }
-        });
+            baseModel.overrides.splice(index, 0, {});
+        }
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        model.overrides.splice(index, 0, { predicate: { custom_model_data: cmdID }, model: `item/${texPath}` });
-    }
-    await writeFile(dir, JSON.stringify(model, undefined, ' '.repeat(4)));
+        if (index !== -1) baseModel.overrides[index] = { predicate: { custom_model_data: cmdID2 }, model };
+    };
+
+    setOverride(cmdID, `item/${texPath}`);
+    setOverride(cmdID + 1, `item/${baseItem}`, false);
+    await writeFile(dir, JSON.stringify(baseModel, undefined, ' '.repeat(4)));
 }
 
 export async function createModel(modelUri: Uri, parent: string, texture?: string): Promise<void>;
