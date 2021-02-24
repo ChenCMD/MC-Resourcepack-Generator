@@ -20,7 +20,7 @@ export class ResourcePackGenerator {
         this._injectFolder = config.customizeInjectFolder;
         this._version = config.version;
         this._parentElements = config.parentElements;
-        this._textureFileName = config.textureFileName;
+        this._textureFileName = config.fileName;
     }
 
     async run(): Promise<void> {
@@ -36,7 +36,7 @@ export class ResourcePackGenerator {
             baseItem,
             id,
             injectFolder: this._injectFolder,
-            textureFileName: this._textureFileName
+            fileName: this._textureFileName
         };
         // 生成する種類
         const genNode = new (await this._listenGenType())(ctx);

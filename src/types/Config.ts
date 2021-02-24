@@ -5,7 +5,7 @@ export interface Config {
     customizeInjectFolder: string
     version: string
     parentElements: ParentItem[]
-    textureFileName: string
+    fileName: string
 }
 
 const defaultConfig: Config = {
@@ -34,7 +34,7 @@ const defaultConfig: Config = {
             hasTextures: false
         }
     ],
-    textureFileName: '{item}/{custom_model_data}'
+    fileName: '{item}/{custom_model_data}'
 };
 
 export function constructConfig(custom: WorkspaceConfiguration, base = defaultConfig): Config {

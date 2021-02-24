@@ -9,7 +9,7 @@ export abstract class AbstractNode {
     private readonly _baseItem: string;
     private readonly _id: number;
     private readonly _injectFolder: string;
-    private _textureFileName: string;
+    private readonly _fileName: string;
 
     constructor(ctx: GeneratorContext) {
         this._parentElements = ctx.parentElements;
@@ -17,14 +17,14 @@ export abstract class AbstractNode {
         this._baseItem = ctx.baseItem;
         this._injectFolder = ctx.injectFolder;
         this._id = ctx.id;
-        this._textureFileName = ctx.textureFileName;
+        this._fileName = ctx.fileName;
     }
 
     abstract childQuestion(parentElements: ParentItem[]): Promise<void>;
 
     async generate(): Promise<void> {
         const dir = this._makeUri('models', `${this._baseItem}.json`);
-        await writeBaseModel(dir, this._baseItem, this._id, this._injectPath(this._id.toString()), this._parentElements);
+        await writeBaseModel(dir, this._baseItem, this._id, this.getChildModelPath(), this._parentElements);
     }
 
     protected async listenParentPath(parentElements: ParentItem[], withoutNonHasTextures?: boolean): Promise<string> {
@@ -32,19 +32,23 @@ export abstract class AbstractNode {
     }
 
     protected getTexturePath(customFileName?: string): string {
-        return `item/${this._getTextureFilePath(customFileName)}`;
+        return `item/${this._getFilePath(customFileName)}`;
     }
 
     protected getTextureUri(customFileName?: string): Uri {
-        return this._makeUri('textures', `${this._getTextureFilePath(customFileName)}.png`);
+        return this._makeUri('textures', `${this._getFilePath(customFileName)}.png`);
+    }
+
+    protected getChildModelPath(): string {
+        return `item/${this._getFilePath()}`;
     }
 
     protected getChildModelUri(): Uri {
-        return this._makeUri('models', this._injectPath(`${this._id}.json`));
+        return this._makeUri('models', `${this._getFilePath()}.json`);
     }
 
-    private _getTextureFilePath(customFileName?: string): string {
-        const name = this._textureFileName
+    private _getFilePath(customFileName?: string): string {
+        const name = this._fileName
             .replace('{item}', this._baseItem)
             .replace('{custom_model_data}', `${this._id}`);
         return this._injectPath(customFileName ? `${name}/${customFileName}` : name);

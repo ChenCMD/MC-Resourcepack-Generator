@@ -42,11 +42,11 @@
 					"description": "テクスチャやmodelファイルを配置するフォルダ",
 					"default": ""
 				},
-				"mcrg.textureFileName": {
+				"mcrg.fileName": {
 					"type": "string",
 					"pattern": "^[a-z0-9/._-]*(?:(?:\\{custom_model_data\\})?[a-z0-9/._-]*(?:\\{item\\})?|(?:\\{item\\})?[a-z0-9/._-]*(?:\\{custom_model_data\\})?)[a-z0-9/._-]*$",
 					"patternErrorMessage": "使用できない文字が含まれているか、'{custom_model_data}'が含まれてません。",
-					"description": "MCRGが配置するテクスチャの名前\n衝突防止のため、'{custom_model_data}'は必ず含める必要があります\n\t - '{item}'は生成時に記入する元となるアイテムのItemIDに置換されます。\n\t - '{custom_model_data}'は生成時に記入するCustomModelDataのIDに置換されます。",
+					"description": "MCRGが配置するモデル/テクスチャの名前\n衝突防止のため、'{custom_model_data}'は必ず含める必要があります\n\t - '{item}'は生成時に記入する元となるアイテムのItemIDに置換されます。\n\t - '{custom_model_data}'は生成時に記入するCustomModelDataのIDに置換されます。",
 					"default": "{item}/{custom_model_data}"
 				},
 				"mcrg.version": {

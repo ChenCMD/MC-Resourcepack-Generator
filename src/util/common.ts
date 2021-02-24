@@ -36,7 +36,7 @@ export async function writeBaseModel(dir: Uri, baseItem: string, cmdID: number, 
         if (index !== -1) baseModel.overrides[index] = { predicate: { custom_model_data: cmdID2 }, model };
     };
 
-    setOverride(cmdID, `item/${texPath}`);
+    setOverride(cmdID, texPath);
     setOverride(cmdID + 1, `item/${baseItem}`, false);
     await writeFile(dir, JSON.stringify(baseModel, undefined, ' '.repeat(4)));
 }
