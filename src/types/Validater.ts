@@ -10,6 +10,8 @@ export async function itemValidater(str: string, mes: string, version: string): 
     return await isVanillaItem(str, version) ? undefined : mes;
 }
 
-export function pathValidater(str: string, mes: string): undefined | string {
-    return (/^(item|block)\/.*$/.test(str)) ? undefined : mes;
+export function parentValidater(str: string, baseItem?: string): undefined | string {
+    if (!/^(item|block)\/.*$/.test(str)) return 'parentはitem/又はblock/から始まる必要があります。';
+    if (baseItem && str === `item/${baseItem}`) return 'parentに自身を指定することはできません。';
+    return undefined;
 }

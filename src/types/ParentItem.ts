@@ -1,12 +1,12 @@
 import rfdc from 'rfdc';
 import { listenInput, listenPickItem } from '../util/vscodeWrapper';
 import { QuickPickItem } from 'vscode';
-import { pathValidater } from './Validater';
+import { parentValidater } from './Validater';
 
 export type ParentItem = (QuickPickItem & { hasTextures?: boolean });
 
-export async function listenParentPath(parentElement: ParentItem[], placeHolder: string, withoutNonHasTextures = false): Promise<string> {
-    const input = async () => await listenInput(placeHolder, v => pathValidater(v, 'parentはitem/又はblock/から始まる必要があります。'));
+export async function listenParentPath(parentElement: ParentItem[], placeHolder: string, withoutNonHasTextures = false, baseItem?: string): Promise<string> {
+    const input = async () => await listenInput(placeHolder, v => parentValidater(v, baseItem));
     let items = rfdc()(parentElement);
     if (withoutNonHasTextures) {
         items = items.filter(v => v.hasTextures);

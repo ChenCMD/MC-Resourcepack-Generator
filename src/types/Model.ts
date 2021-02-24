@@ -16,7 +16,7 @@ export interface Model {
 
 export async function createModelTemplate(item: string, parentElements: ParentItem[]): Promise<Model> {
     const modelTemplate: Model = {
-        parent: await listenParentPath(parentElements, 'ベースのmodelファイルのparent'),
+        parent: await listenParentPath(parentElements, 'ベースのmodelファイルのparent', false, item),
         textures: {
             layer0: `item/${item}`
         },
