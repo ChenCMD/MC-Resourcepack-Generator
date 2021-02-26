@@ -31,7 +31,7 @@ export class NonAnimated3DGenNode extends AbstractNode {
         // modelファイルの出力
         await createModel(this.getChildModelUri(), modelData);
         // textureファイル
-        this._textureUris.forEach(async png => await applyTexture(this.getTextureUri(path.basename(png.fsPath)), png));
+        this._textureUris.forEach(async png => await applyTexture(this.getTextureUri(path.basename(png.fsPath, '.png')), png));
     }
 
     private async listenModelFile(): Promise<Uri> {
