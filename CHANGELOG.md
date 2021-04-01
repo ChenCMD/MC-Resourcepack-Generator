@@ -1,3 +1,8 @@
+# [v1.3.1](https://github.com/ChenCMD/MC-Resourcepack-Generator/compare/v1.3.0...v1.3.1) (2021-02-21)
+
+## 🐛 Bug Fixes
+- [`0b79015`](https://github.com/ChenCMD/MC-Resourcepack-Generator/commit/0b79015)  さよならsharpまたきてjimp(環境次第で動作しないのを修正)
+
 # [v1.3.0](https://github.com/ChenCMD/MC-Resourcepack-Generator/compare/v1.2.0...v1.3.0) (2021-02-21)
 
 ## ✨ New Features
