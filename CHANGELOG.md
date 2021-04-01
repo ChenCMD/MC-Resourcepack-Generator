@@ -1,3 +1,14 @@
+# [v1.4.0](https://github.com/ChenCMD/MC-Resourcepack-Generator/compare/v1.3.1...v1.4.0) (2021-04-01)
+
+## ✨ New Features
+- [`df56079`](https://github.com/ChenCMD/MC-Resourcepack-Generator/commit/df56079)  CMD生成時にその次のIDにbaseItemを割り当てるように 
+
+## 🐛 Bug Fixes
+- [`0f0410e`](https://github.com/ChenCMD/MC-Resourcepack-Generator/commit/0f0410e)  baseModelでtextureを持たないparentを選択できないのを修正 
+- [`cc79e59`](https://github.com/ChenCMD/MC-Resourcepack-Generator/commit/cc79e59)  generatorがbaseModelの生成を待たないのを修正 
+- [`44ff89b`](https://github.com/ChenCMD/MC-Resourcepack-Generator/commit/44ff89b)  子のmodelにもconfigが出来ようされるように 
+- [`d5cceb5`](https://github.com/ChenCMD/MC-Resourcepack-Generator/commit/d5cceb5)  3Dモデルのテクスチャファイルの拡張子のミスを修正
+
 # [v1.3.1](https://github.com/ChenCMD/MC-Resourcepack-Generator/compare/v1.3.0...v1.3.1) (2021-02-21)
 
 ## 🐛 Bug Fixes
