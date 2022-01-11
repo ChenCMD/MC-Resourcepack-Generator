@@ -64,6 +64,8 @@ export async function listenDir(title: string, openLabel: string, option: Listen
     return ans;
 }
 
+export async function listenPickItem<T extends string>(placeHolder: string, items: string[], canPickMany: false): Promise<T>;
+export async function listenPickItem<T extends string>(placeHolder: string, items: string[], canPickMany: true): Promise<T[]>;
 export async function listenPickItem<T extends QuickPickItem>(placeHolder: string, items: T[], canPickMany: false): Promise<T>;
 export async function listenPickItem<T extends QuickPickItem>(placeHolder: string, items: T[], canPickMany: true): Promise<T[]>;
 export async function listenPickItem<T extends QuickPickItem>(placeHolder: string, items: T[], canPickMany = true): Promise<T | T[]> {

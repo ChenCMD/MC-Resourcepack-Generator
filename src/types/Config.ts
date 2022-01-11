@@ -2,7 +2,7 @@ import { WorkspaceConfiguration } from 'vscode';
 import { ParentItem } from './ParentItem';
 
 export interface Config {
-    customizeInjectFolder: string
+    customizeInjectFolder: string | string[]
     version: string
     parentElements: ParentItem[]
     fileName: string

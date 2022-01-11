@@ -11,7 +11,7 @@ import { GenNodes } from './nodes';
 import { GeneratorContext } from './types/Context';
 
 export class ResourcePackGenerator {
-    private readonly _injectFolder: string;
+    private readonly _injectFolder: string | string[];
     private readonly _version: string;
     private readonly _parentElements: ParentItem[];
     private _textureFileName: string;
@@ -30,12 +30,14 @@ export class ResourcePackGenerator {
         const baseItem = await this._listenBaseItem();
         // CustomModelDataのID
         const id = await this._listenID();
+        // injectFolder
+        const injectFolder = await this._listenInjectFolder();
         const ctx: GeneratorContext = {
             parentElements: this._parentElements,
             genDir,
             baseItem,
             id,
-            injectFolder: this._injectFolder,
+            injectFolder,
             fileName: this._textureFileName
         };
         // 生成する種類
@@ -64,5 +66,11 @@ export class ResourcePackGenerator {
 
     private async _listenBaseItem(): Promise<string> {
         return await listenInput('元となるアイテムのItemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`, this._version));
+    }
+
+    private async _listenInjectFolder(): Promise<string> {
+        // _injectFolderが配列であるならpickupする
+        if (!Array.isArray(this._injectFolder)) return this._injectFolder;
+        return await listenPickItem('生成先ディレクトリを選択してください', this._injectFolder, false);
     }
 }
