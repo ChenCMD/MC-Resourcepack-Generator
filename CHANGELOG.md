@@ -1,3 +1,8 @@
+# [v1.5.0](https://github.com/ChenCMD/MC-Resourcepack-Generator/compare/v1.4.0...v1.5.0) (2022-01-11)
+
+## ✨ New Features
+- [`7b49262`](https://github.com/ChenCMD/MC-Resourcepack-Generator/commit/7b49262)  配置フォルダを生成時に選択できるように
+
 # [v1.4.0](https://github.com/ChenCMD/MC-Resourcepack-Generator/compare/v1.3.1...v1.4.0) (2021-04-01)
 
 ## ✨ New Features
