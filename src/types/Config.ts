@@ -2,7 +2,7 @@ import { WorkspaceConfiguration } from 'vscode';
 import { ParentItem } from './ParentItem';
 
 export interface Config {
-    customizeInjectFolder: string
+    customizeInjectFolder: string | string[]
     version: string
     parentElements: ParentItem[]
     fileName: string
@@ -42,7 +42,7 @@ export function constructConfig(custom: WorkspaceConfiguration, base = defaultCo
         ...base, ...custom
     };
 
-    console.log('config loadded.');
+    console.log('config loaded.');
     console.log(JSON.stringify(config, undefined, ' '.repeat(4)));
 
     return config;

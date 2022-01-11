@@ -36,11 +36,25 @@
 			"title": "MC Resourcepack Generator",
 			"properties": {
 				"mcrg.customizeInjectFolder": {
-					"type": "string",
-					"pattern": "^[a-z0-9/._-]*$",
-					"patternErrorMessage": "使用できない文字が含まれています。",
 					"description": "テクスチャやmodelファイルを配置するフォルダ",
-					"default": ""
+					"oneOf": [
+						{
+							"type": "string",
+							"pattern": "^[a-z0-9/._-]*$",
+							"patternErrorMessage": "使用できない文字が含まれています。",
+							"default": ""
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "string",
+								"pattern": "^[a-z0-9/._-]*$",
+								"patternErrorMessage": "使用できない文字が含まれています。",
+								"default": ""
+							},
+							"minLength": 1
+						}
+					]
 				},
 				"mcrg.fileName": {
 					"type": "string",

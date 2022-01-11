@@ -1,12 +1,12 @@
 import rfdc from 'rfdc';
 import { listenInput, listenPickItem } from '../util/vscodeWrapper';
 import { QuickPickItem } from 'vscode';
-import { parentValidater } from './Validater';
+import { parentValidator } from './Validator';
 
 export type ParentItem = (QuickPickItem & { hasTextures?: boolean });
 
 export async function listenParentPath(parentElement: ParentItem[], placeHolder: string, withoutNonHasTextures = false, baseItem?: string): Promise<string> {
-    const input = async () => await listenInput(placeHolder, v => parentValidater(v, baseItem));
+    const input = async () => await listenInput(placeHolder, v => parentValidator(v, baseItem));
     let items = rfdc()(parentElement);
     if (withoutNonHasTextures) {
         items = items.filter(v => v.hasTextures);
