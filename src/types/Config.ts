@@ -42,7 +42,7 @@ export function constructConfig(custom: WorkspaceConfiguration, base = defaultCo
         ...base, ...custom
     };
 
-    console.log('config loadded.');
+    console.log('config loaded.');
     console.log(JSON.stringify(config, undefined, ' '.repeat(4)));
 
     return config;

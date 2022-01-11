@@ -1,14 +1,14 @@
 import { InputBoxOptions, ProgressLocation, QuickPickItem, Uri, window, workspace } from 'vscode';
 import { UserCancelledError } from '../types/Error';
 import { MessageItemHasId } from '../types/MessageItemHasID';
-import { Validater } from '../types/Validater';
+import { Validator } from '../types/Validator';
 
 export function getIndent(path: string): number {
     const config = workspace.getConfiguration('editor.tabSize', Uri.file(path));
     return config.get<number>('tabSize', 4);
 }
 
-export async function listenInput(message: string, validateInput?: Validater, otherOption?: InputBoxOptions): Promise<string> {
+export async function listenInput(message: string, validateInput?: Validator, otherOption?: InputBoxOptions): Promise<string> {
     const mes = message ? `${message}を入力` : '';
     const ans = await window.showInputBox({
         value: mes,

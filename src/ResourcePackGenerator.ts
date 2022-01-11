@@ -4,7 +4,7 @@ import { GenerateError } from './types/Error';
 import { createExtendQuickPickItems } from './types/ExtendsQuickPickItem';
 import { ParentItem } from './types/ParentItem';
 import { getGenTypeMap } from './types/GenerateType';
-import { intValidater, itemValidater } from './types/Validater';
+import { intValidator, itemValidator } from './types/Validator';
 import { isResourcepackRoot } from './util/common';
 import { listenDir, listenInput, listenPickItem } from './util/vscodeWrapper';
 import { GenNodes } from './nodes';
@@ -60,12 +60,12 @@ export class ResourcePackGenerator {
     }
 
     private async _listenID(): Promise<number> {
-        const res = await listenInput('CustomModelDataのID', v => intValidater(v, '有効な数値を入力してください'));
+        const res = await listenInput('CustomModelDataのID', v => intValidator(v, '有効な数値を入力してください'));
         return Number.parseInt(res);
     }
 
     private async _listenBaseItem(): Promise<string> {
-        return await listenInput('元となるアイテムのItemID', v => itemValidater(v, `「${v}」は有効なItemIDではありません。`, this._version));
+        return await listenInput('元となるアイテムのItemID', v => itemValidator(v, `「${v}」は有効なItemIDではありません。`, this._version));
     }
 
     private async _listenInjectFolder(): Promise<string> {

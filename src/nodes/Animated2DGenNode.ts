@@ -1,5 +1,5 @@
 import { AnimationMcmeta, createAnimationMcmeta, getInterpolateMap } from '../types/AnimationMcmeta';
-import { intValidater } from '../types/Validater';
+import { intValidator } from '../types/Validator';
 import { applyTexture, createModel } from '../util/common';
 import { listenPickItem, listenInput, getOption, listenDir } from '../util/vscodeWrapper';
 import { Uri } from 'vscode';
@@ -42,7 +42,7 @@ export class Animated2DGenNode extends AbstractNode {
 
     private async listenAnimationSetting(): Promise<AnimationMcmeta> {
         const interpolate = await listenPickItem('フレーム間補完を有効にしますか？', createExtendQuickPickItems(getInterpolateMap()), false);
-        const frametime = await listenInput('フレームの推移速度', v => intValidater(v, '有効な数値を入力してください'));
+        const frametime = await listenInput('フレームの推移速度', v => intValidator(v, '有効な数値を入力してください'));
         return createAnimationMcmeta(interpolate, frametime);
     }
 }
