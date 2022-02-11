@@ -30,7 +30,7 @@ MC Resourcepack GeneratorはVSCode Marketplaceからインストールするこ�
 他の方法として、VSCodeで`Ctrl + P`を押し`ext install chencmd.mc-resourcepack-generator`と入力することでもインストールが可能です。
 
 # 使い方
-`Ctrl + P`を押し検索欄に`> Resourcepack: Resourcepack Generator`と入力し順に質問に答えていくことで自動的にmodelファイル等が配置されます。
+`Ctrl + Shift + P`を押し検索欄に`Resourcepack: Resourcepack Generator`と入力し順に質問に答えていくことで自動的にmodelファイル等が配置されます。
 
 # コントリビューション
 もしこの拡張機能にバグや要望がある場合は[CONTRIBUTING.md](CONTRIBUTING.md)を確認してください！
